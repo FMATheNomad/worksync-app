@@ -15,38 +15,38 @@ Worksync is a comprehensive SaaS platform designed to streamline workforce manag
 
 ## Table of Contents
 
-- [Deskripsi](#deskripsi)
+- [Overview](#overview)
 - [Tech Stack](#tech-stack)
-- [Arsitektur](#arsitektur)
+- [Architecture](#architecture)
 - [Prerequisites](#prerequisites)
-- [Setup Lokal](#setup-lokal)
+- [Local Setup](#local-setup)
   - [1. Clone Repository](#1-clone-repository)
   - [2. Setup Environment Variables](#2-setup-environment-variables)
   - [3. Setup PostgreSQL](#3-setup-postgresql)
   - [4. Backend Setup](#4-backend-setup)
   - [5. Frontend Setup](#5-frontend-setup)
-  - [6. Buka Aplikasi](#6-buka-aplikasi)
+  - [6. Access the Application](#6-access-the-application)
 - [Environment Variables](#environment-variables)
   - [Backend](#backend)
   - [Frontend](#frontend)
-- [Setup Manual Steps](#setup-manual-steps)
+- [Manual Setup Steps](#manual-setup-steps)
   - [Generate JWT Secret Key](#generate-jwt-secret-key)
   - [Setup Polar.sh](#setup-polar)
   - [Setup Cloudinary](#setup-cloudinary)
   - [Setup BigDataCloud](#setup-bigdatacloud)
   - [Setup DeepSeek](#setup-deepseek)
-  - [Setup PostgreSQL di Railway](#setup-postgresql-di-railway)
+  - [Setup PostgreSQL on Railway](#setup-postgresql-on-railway)
   - [Run Migrations](#run-migrations)
   - [Setup Polar.sh Webhook](#setup-polar-webhook)
-- [Deployment ke Railway](#deployment-ke-railway)
-- [Fitur](#fitur)
-  - [Karyawan](#karyawan)
+- [Railway Deployment](#railway-deployment)
+- [Features](#features)
+  - [Employee](#employee)
   - [Admin](#admin)
-- [Penggunaan API](#penggunaan-api)
-- [Kontribusi](#kontribusi)
-- [Lisensi](#lisensi)
+- [API Usage](#api-usage)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Deskripsi
+## Overview
 
 Worksync is a Works Activity Tracker that solves the fundamental challenges of managing distributed and hybrid teams. The platform combines four core functionalities into a single, unified interface:
 
@@ -89,7 +89,7 @@ Worksync is designed for Indonesian companies and teams, with full Bahasa Indone
 | **BigDataCloud API** | Reverse geocoding service for converting GPS coordinates to addresses |
 | **Mapcn.dev** | Map tile provider for MapLibre GL integration |
 
-## Arsitektur
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -149,7 +149,7 @@ Before setting up Worksync locally, ensure you have the following installed:
 - **npm** or **yarn** - Package manager for Node.js
 - **pip** - Package manager for Python
 
-## Setup Lokal
+## Local Setup
 
 ### 1. Clone Repository
 
@@ -237,7 +237,7 @@ Key frontend commands:
 - **Preview build**: `npm run preview`
 - **Lint**: `npm run lint`
 
-### 6. Buka Aplikasi
+### 6. Access the Application
 
 - **Frontend**: http://localhost:5173
 - **Backend**: http://localhost:8000
@@ -333,7 +333,7 @@ DeepSeek powers the AI features in Worksync, including automatic report generati
    DEEPSEEK_MODEL=deepseek-v4-flash
    ```
 
-### Setup PostgreSQL di Railway
+### Setup PostgreSQL on Railway
 
 If deploying to Railway, follow these steps for managed PostgreSQL:
 
@@ -368,7 +368,7 @@ After deploying your application, configure the Polar.sh webhook:
    - `subscription.revoked`
 4. Copy the Webhook Secret and set it as `POLAR_WEBHOOK_SECRET` in your backend `.env`
 
-## Deployment ke Railway
+## Railway Deployment
 
 Railway provides a streamlined deployment experience for full-stack applications. Follow these steps to deploy Worksync:
 
@@ -414,13 +414,13 @@ Railway provides a streamlined deployment experience for full-stack applications
 - Configure automatic deployments from the main branch
 - Set up a custom domain for production
 
-## Fitur
+## Features
 
-### Karyawan
+### Employee
 
 The employee-facing features are designed for simplicity and ease of use:
 
-- **Absensi GPS dengan Selfie**
+- **GPS Attendance with Selfie**
   - Check-in and check-out with GPS location verification
   - Selfie photo capture to prevent attendance fraud
   - Automatic reverse geocoding showing the exact address
@@ -428,21 +428,21 @@ The employee-facing features are designed for simplicity and ease of use:
   - Late arrival detection and automatic marking
   - Attendance history with calendar view
 
-- **Catat Pengeluaran dengan Foto Nota**
+- **Expense Tracking with Receipt Photo**
   - Quick expense recording with receipt photo upload
   - Automatic categorization (transport, meals, supplies, etc.)
   - Manual category override
   - Pending/approved/rejected status tracking
   - Expense history with monthly summaries
 
-- **Laporan Harian dengan AI Assistant**
+- **Daily Reports with AI Assistant**
   - Describe your day's activities in natural language
   - AI structures and formats the report automatically
   - Edit and approve AI-generated reports
   - Report history with weekly/monthly views
   - AI Assistant chat interface for report refinement
 
-- **Riwayat dan Monitoring Pribadi**
+- **Personal History & Monitoring**
   - Personal attendance dashboard
   - Expense history and status tracking
   - Daily report archive
@@ -452,27 +452,27 @@ The employee-facing features are designed for simplicity and ease of use:
 
 The admin dashboard provides comprehensive management and monitoring capabilities:
 
-- **Dashboard dengan Grafik Tren Mingguan**
+- **Dashboard with Weekly Trend Charts**
   - Overview of attendance rates, expenses, and report completion
   - Weekly trend charts for key metrics
   - Team performance comparisons
   - Quick stats cards for instant insights
 
-- **Monitoring dengan Peta Interaktif**
+- **Real-time Monitoring with Interactive Map**
   - Real-time employee locations on an interactive map
   - Color-coded markers (checked-in, checked-out, late, absent)
   - Click to view employee details and current status
   - Office boundary visualization
   - Historical location playback
 
-- **Manajemen Karyawan**
+- **Employee Management**
   - Employee list with detailed profiles
   - Add/remove employees and manage roles
   - Set individual work schedules and office locations
   - View attendance and expense history per employee
   - Export employee data
 
-- **Notifikasi Keterlambatan**
+- **Late Arrival Notifications**
   - Real-time notifications when employees are late
   - Push notifications for critical events
   - Configurable late thresholds
@@ -486,19 +486,19 @@ The admin dashboard provides comprehensive management and monitoring capabilitie
   - Automatic insight generation
   - Custom report generation
 
-- **Export Excel (Pro+)**
+- **Excel Export (Pro+)**
   - One-click export of attendance data to Excel
   - Expense reports in spreadsheet format
   - Custom date range selection
   - Ready for accounting and payroll processing
 
-- **Manajemen Subscription & Billing**
+- **Subscription & Billing Management**
   - View current plan and usage
   - Upgrade/downgrade subscription
   - Billing history and invoice download
   - Payment method management
 
-## Penggunaan API
+## API Usage
 
 The Worksync API is fully documented via Swagger UI at `/docs` and ReDoc at `/redoc` when the backend is running.
 
@@ -556,7 +556,7 @@ All API errors follow a consistent format:
 }
 ```
 
-## Kontribusi
+## Contributing
 
 We welcome contributions to Worksync! To contribute:
 
@@ -580,11 +580,11 @@ We welcome contributions to Worksync! To contribute:
 - **Backend**: Ruff linter is configured for Python code
 - **TypeScript**: Strict mode is enabled; avoid using `any`
 
-## Lisensi
+## License
 
 **Proprietary License - All Rights Reserved**
 
-Copyright (c) 2024 FMATheNomad
+Copyright (c) 2026 FMATheNomad
 
 This software and its associated files are **proprietary and confidential**. Unauthorized copying, modification, distribution, reverse engineering, or use of this software, via any medium, is strictly prohibited without prior written permission from the copyright holder.
 
@@ -593,6 +593,6 @@ This software is provided "as is" without warranty of any kind. See the [LICENSE
 ---
 
 <p align="center">
-  <strong>Worksync</strong> — Lacak Aktivitas Kerja Tim dengan Mudah dan Profesional<br />
-  Dibangun dengan ❤️ oleh <a href="https://github.com/FMATheNomad">FMATheNomad</a>
+  <strong>Worksync</strong> — AI-Powered Employee Activity Tracker<br />
+  Built with ❤️ by <a href="https://github.com/FMATheNomad">FMATheNomad</a>
 </p>
