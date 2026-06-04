@@ -594,5 +594,5 @@ This software is provided "as is" without warranty of any kind. See the [LICENSE
 
 <p align="center">
   <strong>Worksync</strong> — AI-Powered Employee Activity Tracker<br />
-  Built with ❤️ by <a href="https://github.com/FMATheNomad">FMATheNomad</a>
+  Build and Dev by <a href="https://fmasoftwarelabs.up.railway.app">FMA Software Labs</a> 🔥
 </p>
