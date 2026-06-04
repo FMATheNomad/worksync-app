@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: worksync
+      POSTGRES_PASSWORD: worksync_secret
+      POSTGRES_DB: worksync
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    env_file: ./backend/.env
+    depends_on:
+      - db
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+volumes:
+  pgdata:
