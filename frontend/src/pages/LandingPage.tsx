@@ -357,8 +357,9 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-surface-border text-center text-sm text-text-muted">
-            &copy; {new Date().getFullYear()} Worksync. All rights reserved.
+          <div className="mt-12 pt-8 border-t border-surface-border text-center text-sm text-text-muted space-y-1">
+            <p>&copy; {new Date().getFullYear()} Worksync. All rights reserved.</p>
+            <p>Build and Dev by <a href="https://fmasoftwarelabs.up.railway.app" target="_blank" rel="noopener noreferrer" className="text-worksync-400 hover:text-worksync-300 transition-colors">FMA Software Labs</a> 🔥</p>
           </div>
         </div>
       </footer>
