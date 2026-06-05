@@ -42,9 +42,9 @@ export default function MonitoringPage() {
         expenseService.getExpenses({ date: dateFilter, limit: 100 }),
         reportService.getReports({ date: dateFilter, limit: 100 }),
       ])
-      setAttendances(attRes.data)
-      setExpenses(expRes.data)
-      setReports(repRes.data)
+      setAttendances(attRes.attendances)
+      setExpenses(expRes.expenses)
+      setReports(repRes.reports)
     } catch {
     } finally {
       setLoading(false)
@@ -125,18 +125,18 @@ export default function MonitoringPage() {
                     ) : (
                       attendances.map((att) => (
                         <TableRow key={att.id}>
-                          <TableCell className="font-medium">{att.userName}</TableCell>
-                          <TableCell>{att.checkInTime ? new Date(att.checkInTime).toLocaleTimeString() : '-'}</TableCell>
-                          <TableCell>{att.checkOutTime ? new Date(att.checkOutTime).toLocaleTimeString() : '-'}</TableCell>
+                          <TableCell className="font-medium">{att.user_name}</TableCell>
+                          <TableCell>{att.check_in_time ? new Date(att.check_in_time).toLocaleTimeString() : '-'}</TableCell>
+                          <TableCell>{att.check_out_time ? new Date(att.check_out_time).toLocaleTimeString() : '-'}</TableCell>
                           <TableCell>
                             <Badge
-                              variant={att.status === 'on_time' ? 'success' : att.status === 'late' ? 'warning' : 'destructive'}
+                              variant={att.status === 'present' ? 'success' : att.status === 'late' ? 'warning' : 'destructive'}
                             >
                               {att.status}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-xs text-text-muted">
-                            {att.checkInLat?.toFixed(4)}, {att.checkInLng?.toFixed(4)}
+                            {att.check_in_lat?.toFixed(4)}, {att.check_in_lng?.toFixed(4)}
                           </TableCell>
                         </TableRow>
                       ))
@@ -178,14 +178,14 @@ export default function MonitoringPage() {
                     ) : (
                       expenses.map((exp) => (
                         <TableRow key={exp.id}>
-                          <TableCell className="font-medium">{exp.userName}</TableCell>
-                          <TableCell>{exp.itemName}</TableCell>
+                          <TableCell className="font-medium">{exp.user_name}</TableCell>
+                          <TableCell>{exp.item_name}</TableCell>
                           <TableCell>
                             <Badge variant="secondary">{exp.category}</Badge>
                           </TableCell>
-                          <TableCell>Rp {exp.amount.toLocaleString()}</TableCell>
+                          <TableCell>$ {exp.amount.toFixed(2)}</TableCell>
                           <TableCell>
-                            {exp.photoUrl ? (
+                            {exp.photo_url ? (
                               <Button
                                 variant="ghost"
                                 size="icon"
@@ -237,7 +237,7 @@ export default function MonitoringPage() {
                     ) : (
                       reports.map((rep) => (
                         <TableRow key={rep.id}>
-                          <TableCell className="font-medium">{rep.userName}</TableCell>
+                          <TableCell className="font-medium">{rep.user_name}</TableCell>
                           <TableCell>
                             <Badge variant={rep.status === 'submitted' ? 'success' : 'warning'}>
                               {rep.status}
@@ -245,7 +245,7 @@ export default function MonitoringPage() {
                           </TableCell>
                           <TableCell>{rep.date}</TableCell>
                           <TableCell>
-                            {rep.isAiGenerated ? (
+                            {rep.is_ai_generated ? (
                               <Badge variant="info">AI</Badge>
                             ) : (
                               <span className="text-text-muted text-sm">Manual</span>
@@ -276,12 +276,12 @@ export default function MonitoringPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Expense Photo</DialogTitle>
-            <DialogDescription>{selectedExpense?.itemName}</DialogDescription>
+            <DialogDescription>{selectedExpense?.item_name}</DialogDescription>
           </DialogHeader>
-          {selectedExpense?.photoUrl && (
+          {selectedExpense?.photo_url && (
             <img
-              src={selectedExpense.photoUrl}
-              alt={selectedExpense.itemName}
+              src={selectedExpense.photo_url}
+              alt={selectedExpense.item_name}
               className="w-full rounded-xl"
             />
           )}
@@ -291,7 +291,7 @@ export default function MonitoringPage() {
       <Dialog open={!!selectedReport} onOpenChange={(o) => !o && setSelectedReport(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Report by {selectedReport?.userName}</DialogTitle>
+            <DialogTitle>Report by {selectedReport?.user_name}</DialogTitle>
             <DialogDescription>{selectedReport?.date}</DialogDescription>
           </DialogHeader>
           <p className="text-sm text-text-primary whitespace-pre-wrap">{selectedReport?.content}</p>

@@ -1,3 +1,4 @@
+import asyncio
 from uuid import UUID
 
 from sqlalchemy import select
@@ -43,7 +44,8 @@ async def create_checkout_session(
             user.polar_customer_id = customer.id
             await db.flush()
 
-        checkout = polar.checkouts.create(
+        checkout = await asyncio.to_thread(
+            polar.checkouts.create,
             request={
                 "customer_id": customer.id,
                 "price_id": price_id,
@@ -62,10 +64,7 @@ async def handle_webhook(
     signature: str,
 ) -> None:
     try:
-        from polar_sdk import Polar
-
-        polar = Polar(access_token=settings.polar_access_token)
-        webhook_service = polar.webhooks
+        import standardwebhooks
     except Exception:
         pass
 
@@ -174,8 +173,10 @@ async def create_customer(db: AsyncSession, user: User) -> str | None:
     try:
         from polar_sdk import Polar
 
+        from polar_sdk import Polar
         polar = Polar(access_token=settings.polar_access_token)
-        customer = polar.customers.create(
+        customer = await asyncio.to_thread(
+            polar.customers.create,
             request={
                 "email": user.email,
                 "name": user.name,

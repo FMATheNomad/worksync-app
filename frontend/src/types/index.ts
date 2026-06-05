@@ -3,61 +3,61 @@ export interface User {
   name: string
   email: string
   role: UserRole
-  jabatan: string
-  isActive: boolean
-  subscriptionPlan: SubscriptionPlan
-  subscriptionStatus: SubscriptionStatus
-  createdAt: string
+  jabatan: string | null
+  is_active: boolean
+  subscription_plan: SubscriptionPlan
+  subscription_status: SubscriptionStatus
+  created_at: string
 }
 
 export interface Attendance {
   id: string
-  userId: string
-  userName: string
-  checkInTime: string
-  checkOutTime: string | null
-  checkInLat: number
-  checkInLng: number
-  checkInAddress: string
-  checkOutLat: number | null
-  checkOutLng: number | null
-  checkOutAddress: string | null
-  selfieUrl: string | null
-  status: 'on_time' | 'late' | 'absent'
-  date: string
+  user_id: string
+  user_name: string | null
+  check_in_time: string
+  check_out_time: string | null
+  check_in_lat: number
+  check_in_lng: number
+  check_in_address: string | null
+  check_out_lat: number | null
+  check_out_lng: number | null
+  check_out_address: string | null
+  selfie_url: string | null
+  status: string
+  created_at: string
 }
 
 export interface Expense {
   id: string
-  userId: string
-  userName: string
-  itemName: string
+  user_id: string
+  user_name: string | null
+  item_name: string
   amount: number
   category: string
-  photoUrl: string | null
+  photo_url: string | null
   description: string | null
   date: string
-  createdAt: string
+  created_at: string
 }
 
 export interface DailyReport {
   id: string
-  userId: string
-  userName: string
+  user_id: string
+  user_name: string | null
   content: string
-  status: 'draft' | 'submitted'
+  status: string
   date: string
-  isAiGenerated: boolean
-  createdAt: string
-  updatedAt: string
+  is_ai_generated: boolean
+  created_at: string
+  updated_at: string
 }
 
 export interface AIConversation {
   id: string
-  role: 'user' | 'assistant'
+  role: string
   content: string
-  contextType: 'report' | 'analytics'
-  createdAt: string
+  context_type: string | null
+  created_at: string
 }
 
 export type SubscriptionPlan = 'free' | 'pro' | 'enterprise'
@@ -70,31 +70,10 @@ export interface AuthState {
   isLoading: boolean
 }
 
-export interface PaginatedResponse<T> {
-  data: T[]
-  total: number
-  page: number
-  limit: number
-  totalPages: number
-}
-
 export interface ApiError {
   message: string
   status: number
   errors?: Record<string, string[]>
-}
-
-export interface CheckInData {
-  checkInLat: number
-  checkInLng: number
-  checkInAddress: string
-  selfie?: File
-}
-
-export interface CheckOutData {
-  checkOutLat: number
-  checkOutLng: number
-  checkOutAddress: string
 }
 
 export interface PlanFeatures {
@@ -119,10 +98,7 @@ export interface Plan {
 }
 
 export interface Subscription {
-  id: string
-  plan: SubscriptionPlan
-  status: SubscriptionStatus
-  currentPeriodStart: string
-  currentPeriodEnd: string
-  cancelAtPeriodEnd: boolean
+  plan: string
+  status: string
+  features: string[]
 }

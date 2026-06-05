@@ -1,6 +1,6 @@
 import api from './api'
 import { API_ENDPOINTS } from '@/constants'
-import type { DailyReport, PaginatedResponse } from '@/types'
+import type { DailyReport } from '@/types'
 
 interface ReportParams {
   page?: number
@@ -11,13 +11,13 @@ interface ReportParams {
 }
 
 export const reportService = {
-  createReport: async (data: { content: string; isAiGenerated?: boolean }): Promise<DailyReport> => {
+  createReport: async (data: { content: string; is_ai_generated?: boolean; date?: string }): Promise<DailyReport> => {
     const { data: response } = await api.post<DailyReport>(API_ENDPOINTS.REPORTS.BASE, data)
     return response
   },
 
-  getReports: async (params: ReportParams = {}): Promise<PaginatedResponse<DailyReport>> => {
-    const { data } = await api.get<PaginatedResponse<DailyReport>>(API_ENDPOINTS.REPORTS.BASE, { params })
+  getReports: async (params: ReportParams = {}): Promise<{ reports: DailyReport[]; total: number }> => {
+    const { data } = await api.get<{ reports: DailyReport[]; total: number }>(API_ENDPOINTS.REPORTS.BASE, { params })
     return data
   },
 

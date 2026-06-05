@@ -24,7 +24,7 @@ const recentNotifications = [
 ]
 
 export default function AdminDashboardPage() {
-  const [summary, setSummary] = useState({ total: 0, onTime: 0, late: 0, absent: 0 })
+  const [summary, setSummary] = useState({ total_employees: 0, present: 0, late: 0, absent: 0 })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function AdminDashboardPage() {
                 {loading ? (
                   <Skeleton className="h-8 w-16 mt-1" />
                 ) : (
-                  <p className="text-2xl font-bold text-text-primary mt-1">{summary.total}</p>
+                  <p className="text-2xl font-bold text-text-primary mt-1">{summary.total_employees}</p>
                 )}
               </div>
               <div className="w-12 h-12 rounded-xl bg-worksync-600/20 flex items-center justify-center">
@@ -76,7 +76,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-text-secondary">On Time</p>
-                <p className="text-2xl font-bold text-status-success mt-1">{summary.onTime}</p>
+                <p className="text-2xl font-bold text-status-success mt-1">{summary.present}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-status-success/10 flex items-center justify-center">
                 <Clock className="w-6 h-6 text-status-success" />

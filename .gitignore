@@ -58,13 +58,6 @@ alembic/versions/*.py
 .docker/
 docker-compose.override.yml
 
-# OS
-.DS_Store
-Thumbs.db
-*.swp
-*.swo
-*~
-
 # Misc
 .cache/
 .tmp/

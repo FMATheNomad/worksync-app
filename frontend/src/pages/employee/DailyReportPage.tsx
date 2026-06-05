@@ -42,7 +42,7 @@ export default function DailyReportPage() {
     }
     setSubmitting(true)
     try {
-      await reportService.createReport({ content, isAiGenerated: false })
+      await reportService.createReport({ content, is_ai_generated: false })
       toast({ title: 'Draft saved', variant: 'success' })
       setContent('')
       loadReports()
@@ -60,7 +60,7 @@ export default function DailyReportPage() {
     }
     setSubmitting(true)
     try {
-      await reportService.createReport({ content, isAiGenerated: false })
+      await reportService.createReport({ content, is_ai_generated: false })
       toast({ title: 'Report submitted!', variant: 'success' })
       setContent('')
       setActiveTab('history')
@@ -157,7 +157,7 @@ export default function DailyReportPage() {
                         )}
                         {report.status}
                       </Badge>
-                      {report.isAiGenerated && (
+                      {report.is_ai_generated && (
                         <Badge variant="info">
                           <Sparkles className="w-3 h-3 mr-1" />
                           AI Generated

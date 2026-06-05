@@ -23,8 +23,8 @@ export default function AttendancePage() {
   const [cameraActive, setCameraActive] = useState(false)
   const [address, setAddress] = useState('Fetching location...')
 
-  const isCheckedIn = todayAttendance?.checkInTime && !todayAttendance?.checkOutTime
-  const isCheckedOut = todayAttendance?.checkInTime && todayAttendance?.checkOutTime
+  const isCheckedIn = todayAttendance?.check_in_time && !todayAttendance?.check_out_time
+  const isCheckedOut = todayAttendance?.check_in_time && todayAttendance?.check_out_time
 
   const startCamera = async () => {
     try {
@@ -81,12 +81,7 @@ export default function AttendancePage() {
     }
     setActionLoading(true)
     try {
-      const attendance = await attendanceService.checkIn({
-        checkInLat: lat,
-        checkInLng: lng,
-        checkInAddress: address,
-        selfie: selfieFile || undefined,
-      })
+      const attendance = await attendanceService.checkIn(lat, lng)
       setTodayAttendance(attendance)
       toast({ title: 'Check-in successful!', variant: 'success' })
     } catch (err: any) {
@@ -103,11 +98,7 @@ export default function AttendancePage() {
     }
     setActionLoading(true)
     try {
-      const attendance = await attendanceService.checkOut({
-        checkOutLat: lat,
-        checkOutLng: lng,
-        checkOutAddress: address,
-      })
+      const attendance = await attendanceService.checkOut(lat, lng)
       setTodayAttendance(attendance)
       toast({ title: 'Check-out successful!', variant: 'success' })
     } catch (err: any) {
@@ -158,7 +149,7 @@ export default function AttendancePage() {
             <MapPin className="w-5 h-5 text-worksync-400" />
             Your Location
           </CardTitle>
-          <CardDescription>Latitude: {lat?.toFixed(6)}, Longitude: {lng?.toFixed(6)}</CardDescription>
+          <CardDescription>{address}</CardDescription>
         </CardHeader>
         <CardContent>
           {lat && lng && (

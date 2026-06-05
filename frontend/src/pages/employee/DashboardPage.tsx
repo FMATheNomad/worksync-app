@@ -27,19 +27,19 @@ export default function EmployeeDashboardPage() {
       const [attendanceRes] = await Promise.all([
         attendanceService.getAttendances({ date: today, limit: 1 }),
       ])
-      if (attendanceRes.data.length > 0) {
-        setTodayAttendance(attendanceRes.data[0])
+      if (attendanceRes.attendances.length > 0) {
+        setTodayAttendance(attendanceRes.attendances[0])
       }
       const recentRes = await attendanceService.getAttendances({ limit: 5 })
-      setRecentAttendances(recentRes.data)
+      setRecentAttendances(recentRes.attendances)
     } catch {
     } finally {
       setLoading(false)
     }
   }
 
-  const isCheckedIn = todayAttendance?.checkInTime && !todayAttendance?.checkOutTime
-  const isCheckedOut = todayAttendance?.checkInTime && todayAttendance?.checkOutTime
+  const isCheckedIn = todayAttendance?.check_in_time && !todayAttendance?.check_out_time
+  const isCheckedOut = todayAttendance?.check_in_time && todayAttendance?.check_out_time
 
   return (
     <div className="space-y-6">
@@ -150,17 +150,17 @@ export default function EmployeeDashboardPage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-2 h-2 rounded-full ${
-                      att.status === 'on_time' ? 'bg-status-success' :
+                      att.status === 'present' ? 'bg-status-success' :
                       att.status === 'late' ? 'bg-status-warning' : 'bg-status-error'
                     }`} />
                     <div>
                       <p className="text-sm font-medium text-text-primary capitalize">{att.status}</p>
-                      <p className="text-xs text-text-muted">{att.date}</p>
+                      <p className="text-xs text-text-muted">{att.check_in_time ? new Date(att.check_in_time).toLocaleDateString() : '-'}</p>
                     </div>
                   </div>
                   <div className="text-right text-xs text-text-muted">
-                    {att.checkInTime && <p>In: {new Date(att.checkInTime).toLocaleTimeString()}</p>}
-                    {att.checkOutTime && <p>Out: {new Date(att.checkOutTime).toLocaleTimeString()}</p>}
+                    {att.check_in_time && <p>In: {new Date(att.check_in_time).toLocaleTimeString()}</p>}
+                    {att.check_out_time && <p>Out: {new Date(att.check_out_time).toLocaleTimeString()}</p>}
                   </div>
                 </div>
               ))}

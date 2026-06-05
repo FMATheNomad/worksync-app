@@ -76,14 +76,13 @@ export default function ExpensesPage() {
     }
     setSubmitting(true)
     try {
-      const fd = new FormData()
-      fd.append('itemName', formData.itemName)
-      fd.append('amount', formData.amount)
-      fd.append('category', formData.category)
-      if (formData.description) fd.append('description', formData.description)
-      if (photoFile) fd.append('photo', photoFile)
-
-      await expenseService.createExpense(fd)
+      await expenseService.createExpense({
+        item_name: formData.itemName,
+        amount: parseFloat(formData.amount),
+        category: formData.category,
+        date: new Date().toISOString().split('T')[0] as any,
+        description: formData.description || undefined,
+      })
       toast({ title: 'Expense added successfully', variant: 'success' })
       setShowForm(false)
       setFormData({ itemName: '', amount: '', category: '', description: '' })
@@ -260,7 +259,7 @@ export default function ExpensesPage() {
                       </div>
                     )}
                     <div>
-                      <h3 className="font-medium text-text-primary">{expense.itemName}</h3>
+                      <h3 className="font-medium text-text-primary">{expense.item_name}</h3>
                       <p className="text-xs text-text-muted">{expense.category}</p>
                       {expense.description && (
                         <p className="text-xs text-text-secondary mt-1">{expense.description}</p>
