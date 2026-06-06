@@ -1,6 +1,10 @@
+import os
+from pathlib import Path
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.api.v1 import auth, users, attendance, expenses, reports, ai, billing
 from app.core.config import settings
@@ -19,7 +23,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url, "http://localhost:5173", "http://localhost:3000"],
+    allow_origins=[settings.frontend_url, "http://localhost:5173", "http://localhost:3000", "https://*.up.railway.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -34,6 +38,10 @@ app.include_router(expenses.router, prefix="/api/v1")
 app.include_router(reports.router, prefix="/api/v1")
 app.include_router(ai.router, prefix="/api/v1")
 app.include_router(billing.router, prefix="/api/v1")
+
+STATIC_DIR = Path(__file__).parent.parent.parent / "frontend" / "dist"
+if STATIC_DIR.exists():
+    app.mount("/assets", StaticFiles(directory=str(STATIC_DIR / "assets")), name="assets")
 
 
 @app.exception_handler(401)
@@ -55,6 +63,8 @@ async def forbidden_handler(request: Request, exc: Exception):
 
 @app.exception_handler(404)
 async def not_found_handler(request: Request, exc: Exception):
+    if STATIC_DIR.exists() and not request.url.path.startswith("/api/") and not request.url.path.startswith("/docs") and not request.url.path.startswith("/redoc"):
+        return FileResponse(str(STATIC_DIR / "index.html"))
     detail = getattr(exc, "detail", "Not found")
     return JSONResponse(
         status_code=404,
