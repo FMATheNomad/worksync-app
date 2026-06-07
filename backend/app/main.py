@@ -5,6 +5,9 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from app.api.v1 import auth, users, attendance, expenses, reports, ai, billing
 from app.core.config import settings
@@ -13,17 +16,22 @@ from app.core.middleware import SubscriptionMiddleware
 from app.core.security import hash_password
 from app.models.user import User, UserRole, SubscriptionPlan, SubscriptionStatus
 
+limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
+
 app = FastAPI(
     title="Worksync API",
     description="Employee attendance, expense, and daily report management system",
     version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url="/docs" if os.getenv("ENV") != "production" else None,
+    redoc_url="/redoc" if os.getenv("ENV") != "production" else None,
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_url, "http://localhost:5173", "http://localhost:3000", "https://*.up.railway.app"],
+    allow_origins=settings.cors_origins.split(",") if settings.cors_origins else ["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -82,9 +90,11 @@ async def internal_error_handler(request: Request, exc: Exception):
 
 @app.on_event("startup")
 async def startup():
+    settings.check_secret()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
+    seed_pw = settings.seed_password
     async with async_session_factory() as db:
         from sqlalchemy import select
         result = await db.execute(select(User).where(User.email == "admin@worksync.app"))
@@ -93,15 +103,15 @@ async def startup():
             from datetime import datetime, timezone
             admin = User(
                 id=uuid.uuid4(), name="Admin Worksync", email="admin@worksync.app",
-                hashed_password=hash_password("password123"),
+                hashed_password=hash_password(seed_pw),
                 role=UserRole.admin, jabatan="System Administrator",
                 is_active=True, subscription_plan=SubscriptionPlan.enterprise,
                 subscription_status=SubscriptionStatus.active, max_employees=999999,
                 created_at=datetime.now(timezone.utc),
             )
             employee = User(
-                id=uuid.uuid4(), name="Karyawan Demo", email="karyawan@worksync.app",
-                hashed_password=hash_password("password123"),
+                id=uuid.uuid4(), name="Employee Demo", email="employee@worksync.app",
+                hashed_password=hash_password(seed_pw),
                 role=UserRole.employee, jabatan="Staff",
                 is_active=True, subscription_plan=SubscriptionPlan.free,
                 subscription_status=SubscriptionStatus.active, max_employees=5,

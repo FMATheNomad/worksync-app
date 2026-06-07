@@ -1,4 +1,5 @@
 import asyncio
+import os
 import uuid
 from datetime import datetime, timezone
 
@@ -20,17 +21,32 @@ async def seed_database():
             print("Admin user already exists, skipping seed.")
             return
 
-        admin = User(
+    seed_pw = os.getenv("SEED_PASSWORD", "password123")
+    admin = User(
             id=uuid.uuid4(),
             name="Admin Worksync",
             email="admin@worksync.app",
-            hashed_password=hash_password("password123"),
+            hashed_password=hash_password(seed_pw),
             role=UserRole.admin,
             jabatan="System Administrator",
             is_active=True,
             subscription_plan=SubscriptionPlan.enterprise,
             subscription_status=SubscriptionStatus.active,
             max_employees=999999,
+            created_at=datetime.now(timezone.utc),
+        )
+
+        employee = User(
+            id=uuid.uuid4(),
+            name="Employee Demo",
+            email="employee@worksync.app",
+            hashed_password=hash_password(seed_pw),
+            role=UserRole.employee,
+            jabatan="Staff",
+            is_active=True,
+            subscription_plan=SubscriptionPlan.free,
+            subscription_status=SubscriptionStatus.active,
+            max_employees=5,
             created_at=datetime.now(timezone.utc),
         )
 

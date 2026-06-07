@@ -1,5 +1,4 @@
 import json
-from datetime import date
 from typing import AsyncGenerator
 from uuid import UUID
 

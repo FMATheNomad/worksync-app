@@ -121,6 +121,7 @@ export default function LandingPage() {
         )}
       </nav>
 
+      <main>
       <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-worksync-950/50 via-surface-base to-surface-base" />
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-worksync-600/10 rounded-full blur-3xl animate-pulse" />
@@ -315,6 +316,7 @@ export default function LandingPage() {
         </div>
       </section>
 
+      </main>
       <footer className="border-t border-surface-border py-16 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">

@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     )
 
     database_url: str = "sqlite+aiosqlite:///./worksync.db"
-    secret_key: str = "change-me-in-production"
+    secret_key: str = ""
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
@@ -28,8 +28,17 @@ class Settings(BaseSettings):
 
     bigdatacloud_api_key: Optional[str] = None
 
+    seed_password: str = "password123"
+    env: str = "development"
+
+    cors_origins: str = "http://localhost:5173"
+
     frontend_url: str = "http://localhost:5173"
     backend_url: str = "http://localhost:8000"
+
+    def check_secret(self) -> None:
+        if not self.secret_key or self.secret_key == "change-me-in-production":
+            raise ValueError("SECRET_KEY must be set and not the default value")
 
     @property
     def async_database_url(self) -> str:

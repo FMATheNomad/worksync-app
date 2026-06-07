@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.main import limiter
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
@@ -12,8 +13,9 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(request: LoginRequest, db: AsyncSession = Depends(get_db)):
-    user = await auth_service.authenticate_user(db, request.email, request.password)
+@limiter.limit("10/minute")
+async def login(body: LoginRequest, request: Request, db: AsyncSession = Depends(get_db)):
+    user = await auth_service.authenticate_user(db, body.email, body.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -34,7 +36,14 @@ async def refresh(request: RefreshTokenRequest, db: AsyncSession = Depends(get_d
 
 
 @router.post("/logout")
-async def logout(current_user: User = Depends(get_current_user)):
+async def logout(
+    request: Request,
+    current_user: User = Depends(get_current_user),
+):
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:]
+        await auth_service.logout_user(token)
     return {"message": "Successfully logged out"}
 
 

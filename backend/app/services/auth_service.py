@@ -8,6 +8,7 @@ from app.core.security import (
     create_refresh_token,
     decode_token,
     hash_password,
+    revoke_token,
     verify_password,
 )
 from app.models.user import User
@@ -53,11 +54,20 @@ async def refresh_access_token(
     user_id = payload.get("sub")
     if not user_id:
         return None
+    revoke_token(refresh_token)
     result = await db.execute(select(User).where(User.id == UUID(user_id)))
     user = result.scalar_one_or_none()
     if not user or not user.is_active:
         return None
     return await generate_tokens(user)
+
+
+async def logout_user(access_token: str) -> None:
+    try:
+        payload = decode_token(access_token)
+        revoke_token(access_token)
+    except ValueError:
+        pass
 
 
 async def get_user_by_id(db: AsyncSession, user_id: UUID) -> User | None:
