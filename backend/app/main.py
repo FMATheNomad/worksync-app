@@ -123,7 +123,7 @@ app.include_router(ai.router, prefix="/api/v1")
 app.include_router(billing.router, prefix="/api/v1")
 
 # --- Static files (frontend SPA) ---
-STATIC_DIR = Path(__file__).parent.parent.parent / "frontend" / "dist"
+STATIC_DIR = Path(__file__).parent.parent / "frontend" / "dist"
 if STATIC_DIR.exists():
     # Mount /assets so React's built assets are served directly.
     app.mount("/assets", StaticFiles(directory=str(STATIC_DIR / "assets")), name="assets")
