@@ -28,7 +28,7 @@ export default function DailyReportPage() {
   const loadReports = async () => {
     try {
       const res = await reportService.getReports({ limit: 20 })
-      setReports(res.data)
+      setReports(res.reports)
     } catch {
     } finally {
       setLoading(false)
@@ -165,7 +165,7 @@ export default function DailyReportPage() {
                       )}
                     </div>
                     <span className="text-xs text-text-muted">
-                      {format(new Date(report.createdAt), 'MMM d, HH:mm')}
+                      {format(new Date(report.created_at), 'MMM d, HH:mm')}
                     </span>
                   </div>
                   <p className="text-sm text-text-secondary line-clamp-3">{report.content}</p>

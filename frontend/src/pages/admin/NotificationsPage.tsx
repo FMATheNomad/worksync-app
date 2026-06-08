@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Bell, AlertTriangle, CheckCircle, Clock } from 'lucide-react'
+import { Bell, AlertTriangle, CheckCircle, Clock, Send } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { toast } from '@/components/ui/toast'
-import { ABSENSI_CONSTANTS, APP_NAME } from '@/constants'
+import { ABSENSI_CONSTANTS } from '@/constants'
 
 interface LateEmployee {
   id: string

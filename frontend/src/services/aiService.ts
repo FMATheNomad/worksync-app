@@ -9,7 +9,7 @@ export const aiService = {
   },
 
   askAnalytics: async (question: string): Promise<{ answer: string }> => {
-    const { data } = await api.post(API_ENDPOINTS.AI.ANALYTICS, { question })
+    const { data } = await api.post(API_ENDPOINTS.AI.ASK_ANALYTICS, { question })
     return data
   },
 

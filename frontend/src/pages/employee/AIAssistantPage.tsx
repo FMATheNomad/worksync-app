@@ -1,13 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
 import { Bot, Send, Sparkles, User, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { aiService } from '@/services/aiService'
 import { toast } from '@/components/ui/toast'
-import type { AIConversation } from '@/types'
 
 interface Message {
   id: string

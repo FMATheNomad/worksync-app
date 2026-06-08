@@ -55,7 +55,7 @@ export default function EmployeeManagementPage() {
     (e) =>
       e.name.toLowerCase().includes(search.toLowerCase()) ||
       e.email.toLowerCase().includes(search.toLowerCase()) ||
-      e.jabatan.toLowerCase().includes(search.toLowerCase())
+      (e.jabatan || '').toLowerCase().includes(search.toLowerCase())
   )
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -86,7 +86,7 @@ export default function EmployeeManagementPage() {
       name: employee.name,
       email: employee.email,
       password: '',
-      jabatan: employee.jabatan,
+      jabatan: employee.jabatan || '',
       role: employee.role,
     })
     setShowForm(true)
@@ -95,9 +95,9 @@ export default function EmployeeManagementPage() {
   const handleToggleActive = async (employee: User) => {
     try {
       await api.patch(`${API_ENDPOINTS.EMPLOYEES.BASE}/${employee.id}`, {
-        isActive: !employee.isActive,
+        is_active: !employee.is_active,
       })
-      toast({ title: `Employee ${employee.isActive ? 'deactivated' : 'activated'}`, variant: 'success' })
+      toast({ title: `Employee ${employee.is_active ? 'deactivated' : 'activated'}`, variant: 'success' })
       loadEmployees()
     } catch {
       toast({ title: 'Failed to update employee', variant: 'error' })
@@ -260,8 +260,8 @@ export default function EmployeeManagementPage() {
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant={emp.isActive ? 'success' : 'destructive'}>
-                          {emp.isActive ? 'Active' : 'Inactive'}
+                        <Badge variant={emp.is_active ? 'success' : 'destructive'}>
+                          {emp.is_active ? 'Active' : 'Inactive'}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -278,7 +278,7 @@ export default function EmployeeManagementPage() {
                             size="icon"
                             onClick={() => handleToggleActive(emp)}
                           >
-                            {emp.isActive ? (
+                            {emp.is_active ? (
                               <ToggleRight className="w-4 h-4 text-status-success" />
                             ) : (
                               <ToggleLeft className="w-4 h-4 text-text-muted" />

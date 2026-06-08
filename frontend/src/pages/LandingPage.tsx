@@ -262,7 +262,7 @@ export default function LandingPage() {
             <p className="text-text-secondary text-lg">Mulai gunakan Worksync dalam 3 langkah mudah.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8 relative">
-            {STEPS.map((step, i) => (
+            {STEPS.map((step) => (
               <div key={step.number} className="relative text-center group">
                 <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-worksync-600 to-worksync-800 flex items-center justify-center text-2xl font-bold text-white group-hover:scale-110 transition-transform">
                   {step.number}

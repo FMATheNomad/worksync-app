@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { CreditCard, Sparkles, Check, ChevronRight } from 'lucide-react'
+import { CreditCard, Sparkles, Check } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -55,7 +55,7 @@ export default function BillingPage() {
     }
   }
 
-  const currentPlan = user?.subscriptionPlan || 'free'
+  const currentPlan = user?.subscription_plan || 'free'
 
   return (
     <div className="space-y-6">

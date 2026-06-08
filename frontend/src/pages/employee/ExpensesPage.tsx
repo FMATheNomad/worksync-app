@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
-import { Plus, Receipt, Trash2, Upload, Camera, Image } from 'lucide-react'
+import { Plus, Receipt, Trash2, Camera, Image } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -43,7 +43,7 @@ export default function ExpensesPage() {
     category: '',
     description: '',
   })
-  const [photoFile, setPhotoFile] = useState<File | null>(null)
+  const [_photoFile, setPhotoFile] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function ExpensesPage() {
   const loadExpenses = async () => {
     try {
       const res = await expenseService.getExpenses({ limit: 50 })
-      setExpenses(res.data)
+      setExpenses(res.expenses)
     } catch {
     } finally {
       setLoading(false)
@@ -251,8 +251,8 @@ export default function ExpensesPage() {
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3">
-                    {expense.photoUrl ? (
-                      <img src={expense.photoUrl} alt="" className="w-12 h-12 rounded-lg object-cover" />
+                    {expense.photo_url ? (
+                      <img src={expense.photo_url} alt="" className="w-12 h-12 rounded-lg object-cover" />
                     ) : (
                       <div className="w-12 h-12 rounded-lg bg-surface-elevated flex items-center justify-center">
                         <Image className="w-5 h-5 text-text-muted" />

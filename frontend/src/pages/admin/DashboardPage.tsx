@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Users, Clock, Receipt, FileText, TrendingUp, TrendingDown, Activity } from 'lucide-react'
+import { Users, Clock, TrendingUp, TrendingDown, Activity } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { attendanceService } from '@/services/attendanceService'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts'

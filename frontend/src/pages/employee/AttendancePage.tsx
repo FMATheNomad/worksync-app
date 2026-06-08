@@ -97,7 +97,7 @@
  */
 
 import { useState, useRef, useCallback } from 'react'
-import { Camera, MapPin, Clock, CheckCircle, XCircle, Upload, RefreshCw } from 'lucide-react'
+import { Camera, MapPin, CheckCircle, XCircle, Upload, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -116,10 +116,10 @@ export default function AttendancePage() {
 
   const [todayAttendance, setTodayAttendance] = useState<Attendance | null>(null)
   const [actionLoading, setActionLoading] = useState(false)
-  const [selfieFile, setSelfieFile] = useState<File | null>(null)
+  const [_selfieFile, setSelfieFile] = useState<File | null>(null)
   const [selfiePreview, setSelfiePreview] = useState<string | null>(null)
   const [cameraActive, setCameraActive] = useState(false)
-  const [address, setAddress] = useState('Fetching location...')
+  const [address] = useState('Fetching location...')
 
   // Derived state for the UI state machine.
   const isCheckedIn = todayAttendance?.check_in_time && !todayAttendance?.check_out_time
