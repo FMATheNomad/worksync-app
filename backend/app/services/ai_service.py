@@ -142,8 +142,10 @@ async def _call_deepseek_stream(
                         data = json.loads(data_str)
                         delta = data.get("choices", [{}])[0].get("delta", {})
                         content = delta.get("content", "")
-            if content:
-                yield content
+                        if content:
+                            yield content
+                    except json.JSONDecodeError:
+                        continue
 
 
 async def _call_deepseek(messages: list[dict], model: str = None) -> str:
