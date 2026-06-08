@@ -1,15 +1,18 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, LogIn, Sparkles } from 'lucide-react'
+import { Eye, EyeOff, LogIn, Sparkles, Sun, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuthStore } from '@/stores/authStore'
 import { APP_NAME } from '@/constants'
+import { useThemeStore } from '@/stores/themeStore'
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const login = useAuthStore((s) => s.login)
+  const theme = useThemeStore((s) => s.theme)
+  const toggleTheme = useThemeStore((s) => s.toggleTheme)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -40,6 +43,9 @@ export default function LoginPage() {
       <div className="absolute inset-0 bg-gradient-to-br from-worksync-950/40 via-surface-base to-worksync-950/20" />
       <div className="absolute top-20 left-20 w-96 h-96 bg-worksync-500/10 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-20 w-80 h-80 bg-accent-500/10 rounded-full blur-3xl" />
+      <button onClick={toggleTheme} className="absolute top-4 right-4 p-2 rounded-xl bg-surface-card border border-surface-border text-text-secondary hover:text-text-primary transition-colors z-10">
+        {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      </button>
 
       <div className="relative w-full max-w-md px-4">
         <div className="text-center mb-8">
