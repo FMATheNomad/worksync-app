@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom'
-import { Bell, Search, Menu } from 'lucide-react'
+import { Bell, Search, Menu, Sun, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -8,6 +8,7 @@ import {
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useAuthStore } from '@/stores/authStore'
+import { useThemeStore } from '@/stores/themeStore'
 
 const routeNames: Record<string, string> = {
   '/admin/dashboard': 'Dashboard',
@@ -32,6 +33,8 @@ export function Topbar({ onMenuClick }: TopbarProps) {
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
 
+  const theme = useThemeStore((s) => s.theme)
+  const toggleTheme = useThemeStore((s) => s.toggleTheme)
   const currentPage = routeNames[location.pathname] || 'Page'
   const breadcrumbs = location.pathname.split('/').filter(Boolean)
   const initials = user?.name
@@ -67,6 +70,9 @@ export function Topbar({ onMenuClick }: TopbarProps) {
           />
         </div>
 
+        <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-text-secondary">
+          {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </Button>
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="w-5 h-5 text-text-secondary" />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-status-error" />
