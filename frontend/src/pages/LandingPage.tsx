@@ -1,3 +1,58 @@
+/**
+ * Public landing/marketing page (no auth required).
+ *
+ * WHY THIS EXISTS: First impression for potential customers. Must communicate
+ * value proposition, features, how-it-works, and pricing — all without the
+ * user needing to sign up. This is the primary conversion funnel.
+ *
+ * SECTION ARCHITECTURE:
+ *   1. Hero: Above-the-fold value proposition with CTA buttons.
+ *   2. Features: Grid of 6 feature cards (GPS, AI, Expenses, Monitoring,
+ *      Analytics, Export). Each card has an icon, title, and description.
+ *   3. How It Works: 3-step numbered process (Register → Work → Monitor).
+ *   4. Why Worksync: 4 advantage pillars (Enterprise, AI, Mobile, Price).
+ *   5. Pricing: 3-tier pricing table with monthly/yearly toggle.
+ *   6. Footer: Links, copyright, branding.
+ *
+ *   WHY this specific section order: Standard SaaS landing page pattern that
+ *   leads visitors through a proven conversion funnel:
+ *     Attention (Hero) → Interest (Features) → Desire (How it works + Why)
+ *     → Action (Pricing + CTA).
+ *
+ * SEO CONSIDERATIONS:
+ *   - Semantic HTML: h1, h2, section, nav, footer for proper heading hierarchy.
+ *   - Text content (not SVGs/images for text): All descriptions are HTML text,
+ *     searchable by crawlers. The dashboard preview is a CSS-only placeholder
+ *     (no screenshot image) — adding an actual screenshot with alt text would
+ *     improve SEO.
+ *   - No meta tags: These should be added in index.html or via a helmet library.
+ *   - Links use href (not onClick navigate) for navigation links in the hero
+ *     and pricing sections — these are crawlable.
+ *
+ * RESPONSIVE DESIGN:
+ *   - Mobile-first: The nav collapses to hamburger menu below md breakpoint.
+ *   - Feature grid: 1 col (mobile) → 2 col (md) → 3 col (lg).
+ *   - Pricing cards: 1 col → 3 col. The "Pro" card is highlighted and scaled.
+ *   - Smooth scroll: Anchor links (#features, #how-it-works, #pricing) use
+ *     scrollIntoView with smooth behavior for in-page navigation.
+ *
+ * PERFORMANCE:
+ *   - No heavy images or animations that would impact LCP.
+ *   - CSS blur and pulse animations are GPU-accelerated (opacity/transform).
+ *   - Lucide icons are tree-shaken (only used icons are imported).
+ *   - All sections render on mount — no lazy loading needed for this page.
+ *
+ * PRICING TOGGLE:
+ *   Monthly/Yearly toggle calculates displayed prices from the Plan constants.
+ *   Yearly shows the total (not monthly equivalent) because that's what
+ *   Polar.sh charges. The "Save 20%" label compares yearly vs. monthly×12.
+ *
+ * TRADE-OFF — No i18n:
+ *   All content is hardcoded in Indonesian. For an international SaaS, this
+ *   should use react-i18next or similar. For an MVP targeting the Indonesian
+ *   market, hardcoded Indonesian is acceptable.
+ */
+
 import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -69,6 +124,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-surface-base text-text-primary">
+      {/* Sticky nav with backdrop blur for modern glassmorphism effect */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-surface-base/80 backdrop-blur-xl border-b border-surface-border/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -122,6 +178,7 @@ export default function LandingPage() {
       </nav>
 
       <main>
+      {/* Hero section: Full viewport height with gradient overlay */}
       <section className="relative min-h-screen flex items-center pt-16 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-worksync-950/50 via-surface-base to-surface-base" />
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-worksync-600/10 rounded-full blur-3xl animate-pulse" />

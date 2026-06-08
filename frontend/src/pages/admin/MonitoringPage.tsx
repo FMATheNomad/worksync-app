@@ -1,3 +1,66 @@
+/**
+ * Admin monitoring dashboard — real-time view of all employee activity.
+ *
+ * WHY THIS EXISTS: The central operations hub for admin users. Provides
+ * a single-page view of today's attendance, expenses, and reports across
+ * all employees, with date filtering and detail drill-downs.
+ *
+ * MAP INTEGRATION:
+ *   The attendance tab has a placeholder "Employee location map" section.
+ *   WHY placeholder (not real map): Map integration requires:
+ *     1. A map library (Leaflet, Mapbox GL, Google Maps).
+ *     2. An API key for tile serving.
+ *     3. Pin clustering for multiple employees.
+ *   These add complexity and cost. The placeholder clearly communicates
+ *   that map view is a Pro feature ("Upgrade to Pro for map view"),
+ *   which also serves as an upsell mechanism.
+ *
+ *   When implementing, the map should:
+ *     - Show each employee's check-in location as a pin.
+ *     - Color-code pins: green (present), yellow (late), red (absent).
+ *     - Cluster pins when zoomed out (using leaflet.markercluster).
+ *     - Show employee name and status on pin click.
+ *
+ * DATA LOADING STRATEGY:
+ *   loadData() fires THREE parallel API requests on mount and whenever
+ *   the date filter changes:
+ *     - attendanceService.getAttendances({ date, limit: 100 })
+ *     - expenseService.getExpenses({ date, limit: 100 })
+ *     - reportService.getReports({ date, limit: 100 })
+ *
+ *   WHY parallel (Promise.all): These are independent data sources with
+ *   no cross-dependencies. Parallel loading reduces total wait time to
+ *   the SLOWEST request (typically the one with most data).
+ *
+ *   WHY limit 100: Pagination boundary. For most teams, 100 records/day
+ *   is sufficient. If exceeded, the table just shows the first 100.
+ *   Future enhancement: server-side pagination with "Load more" button.
+ *
+ *   WHY no error handling in catch block: The catch block is empty.
+ *   This means failed requests silently result in empty data. In production,
+ *   you'd want a toast notification or inline error state per tab.
+ *
+ * TAB DESIGN:
+ *   Three tabs (Attendance, Expenses, Reports) with independent table views.
+ *   Each tab queries a different service but shares the date filter.
+ *   Tables show key fields with badges for status indicators.
+ *
+ *   Attendance: Employee, Check In, Check Out, Status, Location (coords).
+ *   Expenses: Employee, Item, Category, Amount, Photo (eye icon).
+ *   Reports: Employee, Status, Date, AI Generated (badge), Content (view button).
+ *
+ * DIALOG (DETAIL VIEW):
+ *   - Expense photo: Modal showing the receipt/photo image.
+ *   - Report content: Modal showing the full report text (whitespace-pre).
+ *   Both modals close on backdrop click or X button.
+ *
+ * PERFORMANCE:
+ *   - Date filter uses a controlled input (date type) that triggers reload
+ *     on every change. For very large datasets, consider debouncing.
+ *   - Skeletons show during loading to reduce perceived latency.
+ *   - Tables use native HTML table elements for efficient rendering.
+ */
+
 import { useState, useEffect } from 'react'
 import { MapPin, Receipt, FileText, Search, Filter, Eye } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -46,6 +109,8 @@ export default function MonitoringPage() {
       setExpenses(expRes.expenses)
       setReports(repRes.reports)
     } catch {
+      // Silent failure: stale data remains visible.
+      // Future: show inline error state.
     } finally {
       setLoading(false)
     }

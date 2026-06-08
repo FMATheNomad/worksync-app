@@ -1,3 +1,61 @@
+"""
+Billing service — Polar.sh integration for subscription management.
+
+WHY THIS EXISTS: Manages the entire subscription lifecycle through Polar.sh's API
+and webhooks. Polar.sh is the payment processing partner; this service translates
+Polar's subscription events into user model updates.
+
+SUBSCRIPTION STATE MACHINE:
+  User signs up → subscription_status=inactive, plan=free
+  User clicks "Upgrade" → create_checkout_session → Polar.sh checkout page
+  User pays → Polar.sh sends webhook: subscription.created → subscription.active
+    → user.status=active, user.plan=pro/enterprise, max_employees updated
+  Payment fails → Polar.sh sends: subscription.updated (status=past_due)
+    → user.status=past_due (grace period)
+  User cancels → Polar.sh sends: subscription.canceled
+    → user.status=canceled, plan=free, max_employees=5
+
+  REFUND/EXPIRATION: Not yet handled. Polar.sh would send additional events
+  that we'd need to handle in _handle_subscription_updated.
+
+POLLAR.SH INTEGRATION:
+  - Uses the polar_sdk Python package for API calls.
+  - Customer creation: Each user gets a Polar.sh customer record linked by
+    user.email. If a customer already exists (from a previous checkout attempt),
+    we reuse it. This prevents duplicate customer records per user.
+  - Checkout sessions: Created with a price_id (defined in Polar.sh dashboard)
+    and a success_url for post-payment redirect. No cancel_url is set because
+    Polar.sh's hosted checkout page handles cancellation internally.
+
+WEBHOOK VERIFICATION:
+  handle_webhook verifies the Polar.sh signature using standardwebhooks library.
+  This proves the webhook genuinely came from Polar.sh (not a malicious actor).
+  SECURITY: The endpoint must NOT require authentication (the webhook caller
+  doesn't have a session token). Instead, it relies entirely on the
+  polar-signature header for authenticity.
+
+  WHY standardwebhooks (not manual HMAC): standardwebhooks (the library from
+  Svix/Standard Webhooks) handles edge cases like timestamp tolerance and
+  signature scheme evolution. It's the same verification mechanism used by
+  Stripe, GitHub, and others for their webhooks.
+
+ASYNC POLAR.SD CALLS:
+  polar_sdk uses synchronous HTTP under the hood. We wrap all calls in
+  asyncio.to_thread to avoid blocking the event loop. This is a common pattern
+  when using sync SDKs in async FastAPI applications.
+
+EDGE CASES:
+  - Missing customer: If a subscription event arrives for a customer_id we
+    don't have in our DB, we log and return (no crash). This could happen if
+    the webhook arrives before polar_customer_id is saved, or for a deleted user.
+  - Unknown event type: handle_webhook ignores unhandled event types. Polar.sh
+    sends many event types; we only process the ones relevant to subscription
+    state transitions.
+  - race conditions: If two webhooks arrive simultaneously (e.g., subscription.active
+    and subscription.updated), the last write wins. This is acceptable because
+    both handlers set consistent state for the given event data.
+"""
+
 import asyncio
 from uuid import UUID
 
@@ -15,6 +73,19 @@ async def create_checkout_session(
     price_id: str,
     success_url: str,
 ) -> str:
+    """
+    Creates a Polar.sh checkout session and returns the hosted checkout URL.
+    
+    Steps:
+      1. Look up existing Polar.sh customer for this user (by polar_customer_id).
+      2. If no customer exists, create one via Polar SDK.
+      3. Create a checkout session with the specified price_id.
+      4. Return the checkout URL (user is redirected to Polar.sh).
+    
+    WHY reuse existing customer: Prevents duplicate Polar.sh customer records.
+    Polar.sh allows multiple customers with the same email, but we want a 1:1
+    mapping between our users and Polar.sh customers for clean webhook matching.
+    """
     try:
         from polar_sdk import Polar
 
@@ -58,6 +129,15 @@ async def handle_webhook(
     payload: dict,
     signature: str,
 ) -> None:
+    """
+    Processes incoming Polar.sh webhooks.
+    
+    SECURITY: Verifies the polar-signature header BEFORE processing any event.
+    If verification fails, we raise 401 immediately — no event data is trusted.
+    
+    The payload is the raw Polar.sh event object. We route to specific handlers
+    based on event type (subscription.created, .active, .canceled, .updated).
+    """
     try:
         import standardwebhooks
         wh = standardwebhooks.Webhooks(settings.polar_webhook_secret)
@@ -83,6 +163,11 @@ async def handle_webhook(
 
 
 async def _handle_subscription_created(db: AsyncSession, data: dict) -> None:
+    """
+    Fired when a subscription is initially created (before payment confirmation).
+    We simply record the polar_subscription_id on the user record.
+    The plan upgrade happens on subscription.active (after payment).
+    """
     customer_id = data.get("customer_id")
     subscription_id = data.get("id")
     if not customer_id:
@@ -97,6 +182,17 @@ async def _handle_subscription_created(db: AsyncSession, data: dict) -> None:
 
 
 async def _handle_subscription_active(db: AsyncSession, data: dict) -> None:
+    """
+    Fired when payment succeeds and subscription becomes active.
+    This is the main "upgrade" event:
+      - Sets plan to the purchased product name (e.g., "pro", "enterprise").
+      - Sets status to active.
+      - Updates max_employees based on the plan config.
+    
+    WHY read product name from webhook data: Polar.sh includes the product
+    details in the event. We normalize to lowercase for matching against
+    our SubscriptionPlan enum.
+    """
     customer_id = data.get("customer_id")
     subscription_id = data.get("id")
     product_data = data.get("product", {}) or data.get("plan", {})
@@ -117,6 +213,10 @@ async def _handle_subscription_active(db: AsyncSession, data: dict) -> None:
 
 
 async def _handle_subscription_canceled(db: AsyncSession, data: dict) -> None:
+    """
+    Fired when subscription is canceled.
+    Reverts user to free plan with limited max_employees.
+    """
     customer_id = data.get("customer_id")
     if not customer_id:
         return
@@ -132,6 +232,14 @@ async def _handle_subscription_canceled(db: AsyncSession, data: dict) -> None:
 
 
 async def _handle_subscription_updated(db: AsyncSession, data: dict) -> None:
+    """
+    Handles subscription updates including past_due, reactivation, and status changes.
+    
+    Maps Polar.sh subscription statuses to our SubscriptionStatus enum:
+      past_due → past_due (grace period before downgrade)
+      active → active (reactivation after past_due)
+      canceled → canceled (with plan revert to free)
+    """
     customer_id = data.get("customer_id")
     subscription_status = data.get("status", "")
     product_data = data.get("product", {}) or data.get("plan", {})
@@ -162,6 +270,15 @@ async def get_user_subscription(db: AsyncSession, user_id: UUID) -> User | None:
 
 
 async def create_customer(db: AsyncSession, user: User) -> str | None:
+    """
+    Creates a Polar.sh customer record for a user.
+    Called during user registration to pre-link the user with Polar.sh.
+    Returns the Polar.sh customer ID, or None on failure.
+    
+    Edge case: If Polar.sh is down during registration, we still create the
+    user account without a customer ID. The customer will be created on first
+    checkout attempt (in create_checkout_session).
+    """
     try:
         from polar_sdk import Polar
         polar = Polar(access_token=settings.polar_access_token)
@@ -181,6 +298,12 @@ async def create_customer(db: AsyncSession, user: User) -> str | None:
 
 
 async def list_available_plans() -> list[dict]:
+    """
+    Returns the available subscription plans with features and limits.
+    Used by the frontend pricing page and the /billing/plans endpoint.
+    This reads from SUBSCRIPTION_PLANS in utils/constants.py, which is the
+    single source of truth for plan definitions.
+    """
     plans = []
     for plan_name, plan_config in SUBSCRIPTION_PLANS.items():
         plans.append({

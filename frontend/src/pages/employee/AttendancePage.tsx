@@ -1,3 +1,101 @@
+/**
+ * Employee attendance page — check-in/check-out with GPS and selfie.
+ *
+ * WHY THIS EXISTS: The primary daily interaction for employees. They visit
+ * this page at the start and end of each workday to record their attendance
+ * with GPS-verified location and optional selfie verification.
+ *
+ * GPS FLOW:
+ *   1. useGeolocation hook requests browser geolocation permission.
+ *   2. While loading, shows a spinner with "Getting your location..."
+ *   3. On error (denied, unavailable, timeout), shows error card with retry.
+ *   4. On success, lat/lng are available for all subsequent operations.
+ *
+ *   Why useGeolocation hook (not inline navigator.geolocation):
+ *     Reusable across the app. The hook handles permission state, error states,
+ *     and provides a refresh() function for retry. Components can consume
+ *     location data without duplicating geolocation boilerplate.
+ *
+ *   Why we DON'T validate GPS against office geofence:
+ *     The backend doesn't currently enforce radius checks (the constant
+ *     RADIUS_LIMIT_METERS exists but is unused). Enabling geofencing would
+ *     require the backend to know the office location, which it doesn't.
+ *     This would require a company settings table with office coordinates.
+ *
+ * CAMERA INTEGRATION:
+ *   Uses navigator.mediaDevices.getUserMedia for live camera feed.
+ *   The camera shows in a <video> element; capturing draws the frame to a
+ *   <canvas> and converts to a JPEG Blob.
+ *
+ *   WHY canvas-based capture (not just file input):
+ *     Provides a "live capture" experience (point, shoot, done). The file
+ *     upload alternative is for environments where camera access is denied
+ *     or unavailable (desktop, browser restrictions).
+ *
+ *   WHY facingMode: 'user' (front camera):
+ *     Selfies use the front camera. The back camera would show the room,
+ *     not the employee's face.
+ *
+ *   WHY canvas.toBlob with 'image/jpeg':
+ *     JPEG is universally supported and provides good compression for
+ *     upload. The quality is default (~92%) — acceptable for identity
+ *     verification purposes.
+ *
+ *   ERROR HANDLING:
+ *     - getUserMedia can fail: permission denied, camera not found, or
+ *       insecure context (HTTP, not HTTPS). Shows a toast error.
+ *     - Selfie file upload validates size (5MB max) and type (jpeg/png/webp).
+ *     - Invalid files are rejected with toast messages.
+ *
+ * CHECK-IN/CHECK-OUT FLOW:
+ *   State machine derived from todayAttendance:
+ *     null               → Can check in     (button: "Check In")
+ *     checked in         → Can check out    (button: "Check Out")
+ *     checked out        → Completed        (badge: "Completed for today")
+ *
+ *   Both check-in and check-out:
+ *     1. Validate GPS coordinates are available (lat/lng not null).
+ *     2. Call attendanceService with GPS coordinates.
+ *     3. On success: update todayAttendance state, show success toast.
+ *     4. On failure: show error toast with server message.
+ *
+ *   WHY optimistic UI is NOT used:
+ *     Attendance records must be authoritative (server-time based). Optimistic
+ *     updates could show "checked in" when the server actually rejected the
+ *     request (e.g., duplicate, rate limit, server error).
+ *
+ * ERROR HANDLING:
+ *   - GPS error → Full-screen error card with retry button.
+ *   - GPS loading → Full-screen spinner.
+ *   - API errors → Toast messages (not blocking).
+ *   - Camera errors → Toast messages (fallback to file upload).
+ *   - Selfive validation → Toast messages before API call.
+ *
+ *   WHY toasts (not inline errors):
+ *     API calls happen as a result of user action (clicking a button).
+ *     Toasts in response to user action are expected and don't disrupt
+ *     the page layout. GPS/camera errors are shown inline because they
+ *     can occur on initial page load, before any user action.
+ *
+ * SELFIE UPLOAD STRATEGY:
+ *   Currently, the selfie is taken/selected but NOT automatically uploaded
+ *   to Cloudinary. The selfie_url field in AttendanceCreate is included in
+ *   the schema but optional. In the current implementation:
+ *     1. Selfie is captured/selected.
+ *     2. User clicks "Check In".
+ *     3. Selfie is NOT uploaded to Cloudinary (would need a separate upload
+ *        step and then passing the URL).
+ *
+ *   Future enhancement: Upload selfie to Cloudinary when "Check In" is
+ *   clicked, then pass the resulting URL in AttendanceCreate. This requires
+ *   the Cloudinary upload endpoint on the backend (cloudinary route).
+ *
+ * PERFORMANCE:
+ *   - Camera stream is released (tracks stopped) immediately after capture.
+ *   - Selfie preview uses blob URL (revoked when component unmounts implicitly).
+ *   - No unnecessary re-renders: State changes only on user action or geolocation update.
+ */
+
 import { useState, useRef, useCallback } from 'react'
 import { Camera, MapPin, Clock, CheckCircle, XCircle, Upload, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -23,6 +121,7 @@ export default function AttendancePage() {
   const [cameraActive, setCameraActive] = useState(false)
   const [address, setAddress] = useState('Fetching location...')
 
+  // Derived state for the UI state machine.
   const isCheckedIn = todayAttendance?.check_in_time && !todayAttendance?.check_out_time
   const isCheckedOut = todayAttendance?.check_in_time && todayAttendance?.check_out_time
 
@@ -52,6 +151,7 @@ export default function AttendancePage() {
           setSelfiePreview(URL.createObjectURL(blob))
         }
       }, 'image/jpeg')
+      // Release camera immediately — reduces memory/bandwidth usage.
       const stream = video.srcObject as MediaStream
       stream?.getTracks().forEach((t) => t.stop())
       setCameraActive(false)
@@ -108,6 +208,7 @@ export default function AttendancePage() {
     }
   }
 
+  // GPS loading state
   if (geoLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -119,6 +220,7 @@ export default function AttendancePage() {
     )
   }
 
+  // GPS error state
   if (geoError) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -143,6 +245,7 @@ export default function AttendancePage() {
         <p className="text-text-secondary mt-1">Check in and out with GPS verification</p>
       </div>
 
+      {/* GPS Location Card — shows coordinates (map is Pro feature) */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -164,6 +267,7 @@ export default function AttendancePage() {
         </CardContent>
       </Card>
 
+      {/* Selfie Verification Card */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -241,6 +345,7 @@ export default function AttendancePage() {
 
       <Separator />
 
+      {/* Check-in/Check-out State Machine UI */}
       <div className="flex justify-center gap-4">
         {!isCheckedIn && !isCheckedOut && (
           <Button

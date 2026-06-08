@@ -1,3 +1,55 @@
+/**
+ * Route guard component that wraps protected pages.
+ *
+ * WHY THIS EXISTS: Prevents unauthorized access to routes that require
+ * authentication and optionally restricts access by user role.
+ *
+ * ROLE-BASED ACCESS PATTERN:
+ *   The component accepts an optional `allowedRoles` prop (e.g., ['admin']).
+ *   If provided, the user's role must be in this list to access the route.
+ *   If not provided, any authenticated user can access the route.
+ *
+ *   WHY this pattern (not separate AdminRoute + EmployeeRoute components):
+ *     DRY. A single ProtectedRoute handles both cases:
+ *       <Route element={<ProtectedRoute allowedRoles={['admin']} />}>
+ *         <Route path="/admin/dashboard" element={<Dashboard />} />
+ *       </Route>
+ *       <Route element={<ProtectedRoute />}>
+ *         <Route path="/employee/attendance" element={<Attendance />} />
+ *       </Route>
+ *
+ *   The first example requires admin role; the second requires any auth.
+ *
+ *   This is the standard pattern used by React Router v6 for layout routes.
+ *   The <Outlet /> renders the matched child route.
+ *
+ * STATES:
+ *   Loading state (isLoading=true):
+ *     Shows a skeleton UI while checkAuth is in progress.
+ *     WHY skeleton instead of spinner: Reduces layout shift when the
+ *     actual page content loads. The skeleton matches the page dimensions.
+ *
+ *   Unauthenticated state:
+ *     Redirects to /login via <Navigate replace />.
+ *     The `replace` prop replaces the current history entry so the user
+ *     can't press "back" to return to the protected page.
+ *
+ *   Unauthorized state (wrong role):
+ *     Shows an "Access Denied" page with a link to the appropriate dashboard.
+ *     WHY 403 page instead of redirect: The user IS authenticated but lacks
+ *     the specific role. We want to communicate clearly what went wrong.
+ *     The "Go to your dashboard" link routes based on their actual role.
+ *
+ *   Authorized state:
+ *     Renders the child route via <Outlet />.
+ *
+ * WHY useAuthStore (Zustand) instead of context:
+ *   The auth store is already available globally. Using it directly avoids
+ *   wrapping the entire app in an AuthContext provider and keeps the component
+ *   tree flatter. Zustand's subscribe mechanism is more efficient than
+ *   React context for frequently-changing state (token expiry, etc.).
+ */
+
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { ROUTES } from '@/constants'
