@@ -94,6 +94,7 @@ class Settings(BaseSettings):
     # Comma-separated list of allowed origins. In production, restrict to your
     # actual frontend domain(s). "*" is NOT allowed because allow_credentials=True
     # (see main.py CORSMiddleware config).
+    port: int = 8000
     cors_origins: str = "http://localhost:5173"
 
     # --- URLs ---
