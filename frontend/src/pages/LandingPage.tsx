@@ -57,8 +57,9 @@ import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   MapPin, Camera, BarChart3, Download, Sparkles,
-  ChevronRight, Check, Menu, X, Star, Shield, Smartphone, DollarSign
+  ChevronRight, Check, Menu, X, Star, Shield, Smartphone, DollarSign, Sun, Moon
 } from 'lucide-react'
+import { useThemeStore } from '@/stores/themeStore'
 import { ROUTES } from '@/constants'
 
 const FEATURES = [
@@ -109,6 +110,8 @@ const NAV_LINKS = [
 
 export default function LandingPage() {
   const navigate = useNavigate()
+  const theme = useThemeStore((s) => s.theme)
+  const toggleTheme = useThemeStore((s) => s.toggleTheme)
   const [mobileMenu, setMobileMenu] = useState(false)
   const [yearly, setYearly] = useState(false)
 
@@ -142,6 +145,9 @@ export default function LandingPage() {
                   {link.label}
                 </button>
               ))}
+              <button onClick={toggleTheme} className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors">
+                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
               <button onClick={() => navigate(ROUTES.LOGIN)}
                 className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors">
                 Login
@@ -167,6 +173,11 @@ export default function LandingPage() {
               </button>
             ))}
             <hr className="border-surface-border" />
+            <button onClick={toggleTheme}
+              className="flex items-center gap-2 text-sm text-text-secondary py-2">
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+            </button>
             <button onClick={() => navigate(ROUTES.LOGIN)}
               className="block w-full text-left text-sm font-medium py-2">Login</button>
             <button onClick={() => navigate(ROUTES.LOGIN)}
