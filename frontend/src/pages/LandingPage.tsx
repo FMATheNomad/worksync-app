@@ -56,7 +56,7 @@
 import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  MapPin, Camera, FileText, BarChart3, Download, Sparkles,
+  MapPin, Camera, BarChart3, Download, Sparkles,
   ChevronRight, Check, Menu, X, Star, Shield, Smartphone, DollarSign
 } from 'lucide-react'
 import { ROUTES } from '@/constants'

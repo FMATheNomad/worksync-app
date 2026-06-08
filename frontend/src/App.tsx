@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { ROUTES } from '@/constants'
 import { ProtectedRoute } from '@/pages/auth/ProtectedRoute'

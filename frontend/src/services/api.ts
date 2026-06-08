@@ -44,6 +44,12 @@
  */
 
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
+
+declare module 'axios' {
+  interface InternalAxiosRequestConfig {
+    _retry?: boolean
+  }
+}
 import { useAuthStore } from '@/stores/authStore'
 import type { ApiError } from '@/types'
 

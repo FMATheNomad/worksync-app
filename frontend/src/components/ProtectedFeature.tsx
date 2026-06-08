@@ -1,6 +1,6 @@
 import { SUBSCRIPTION_PLANS } from '@/constants'
 import type { SubscriptionPlan } from '@/types'
-import { cn } from '@/lib/utils'
+
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Lock, Sparkles } from 'lucide-react'
