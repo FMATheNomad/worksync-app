@@ -48,9 +48,8 @@
  *   Polar.sh charges. The "Save 20%" label compares yearly vs. monthly×12.
  *
  * TRADE-OFF — No i18n:
- *   All content is hardcoded in Indonesian. For an international SaaS, this
- *   should use react-i18next or similar. For an MVP targeting the Indonesian
- *   market, hardcoded Indonesian is acceptable.
+ *   All content is hardcoded in English. For an international SaaS, this
+ *   should use react-i18next or similar. Currently English-only for MVP.
  */
 
 import { useState, useCallback } from 'react'
@@ -63,48 +62,48 @@ import { useThemeStore } from '@/stores/themeStore'
 import { ROUTES } from '@/constants'
 
 const FEATURES = [
-  { icon: MapPin, title: 'Absensi GPS', description: 'Absensi berbasis lokasi GPS dengan foto selfie dan reverse geocoding. Ketahui lokasi pasti setiap karyawan saat check-in.' },
-  { icon: Sparkles, title: 'Laporan AI', description: 'Hasilkan laporan harian otomatis dengan AI. Cukup deskripsikan aktivitas Anda, AI akan merapikannya.' },
-  { icon: Camera, title: 'Manajemen Pengeluaran', description: 'Catat pengeluaran tim dengan foto nota dan kategorisasi otomatis untuk reimbursement yang transparan.' },
-  { icon: BarChart3, title: 'Monitoring Real-time', description: 'Pantau aktivitas tim secara real-time melalui dashboard interaktif dengan peta dan grafik.' },
-  { icon: Star, title: 'Analitik Cerdas', description: 'Tanya AI tentang data tim Anda. Siapa yang sering terlambat? Berapa total lembur? AI menjawab instan.' },
-  { icon: Download, title: 'Export Excel', description: 'Export data absensi dan pengeluaran ke Excel dalam satu klik. Mudah untuk akuntansi dan payroll.' },
+  { icon: MapPin, title: 'GPS Attendance', description: 'Location-based attendance with selfie verification and reverse geocoding. Know the exact location of every employee at check-in.' },
+  { icon: Sparkles, title: 'AI Reports', description: 'Generate professional daily reports automatically with AI. Just describe your activities, AI formats them for you.' },
+  { icon: Camera, title: 'Expense Management', description: 'Track team expenses with receipt photo uploads and automatic categorization for transparent reimbursements.' },
+  { icon: BarChart3, title: 'Real-time Monitoring', description: 'Monitor team activities in real-time through an interactive dashboard with maps and charts.' },
+  { icon: Star, title: 'Smart Analytics', description: 'Ask AI about your team data. Who is frequently late? What is the total overtime cost? AI answers instantly.' },
+  { icon: Download, title: 'Excel Export', description: 'Export attendance and expense data to Excel with one click. Easy for accounting and payroll.' },
 ]
 
 const STEPS = [
-  { number: '01', title: 'Daftar & Undang Tim', description: 'Admin mendaftar akun Worksync, undang karyawan via email. Tim siap dalam 5 menit.' },
-  { number: '02', title: 'Tim Mulai Bekerja', description: 'Karyawan absen dengan GPS, catat pengeluaran, dan buat laporan harian dengan bantuan AI.' },
-  { number: '03', title: 'Pantau & Analisis', description: 'Admin monitor semua aktivitas di dashboard, AI bantu analisis data untuk keputusan bisnis.' },
+  { number: '01', title: 'Register & Invite Team', description: 'Admin creates a Worksync account, invites employees via email. Your team is ready in 5 minutes.' },
+  { number: '02', title: 'Team Starts Working', description: 'Employees check in with GPS, track expenses, and create daily reports with AI assistance.' },
+  { number: '03', title: 'Monitor & Analyze', description: 'Admin monitors all activities on the dashboard, AI helps analyze data for business decisions.' },
 ]
 
 const ADVANTAGES = [
-  { icon: Shield, title: 'Enterprise Grade', description: 'Dibangun dengan standar keamanan dan skalabilitas enterprise. Data aman dan terenkripsi.' },
-  { icon: Sparkles, title: 'AI-Powered', description: 'DeepSeek AI canggih membantu produktivitas tim Anda dengan analisis dan pembuatan laporan otomatis.' },
-  { icon: Smartphone, title: 'Mobile Friendly', description: 'Bekerja di mana saja dengan tampilan responsif yang dioptimalkan untuk perangkat mobile.' },
-  { icon: DollarSign, title: 'Harga Terjangkau', description: 'Mulai dari $9/bulan untuk tim kecil hingga enterprise. Tidak ada biaya tersembunyi.' },
+  { icon: Shield, title: 'Enterprise Grade', description: 'Built with enterprise security standards and scalability. Your data is secure and encrypted.' },
+  { icon: Sparkles, title: 'AI-Powered', description: 'Advanced DeepSeek AI boosts your team productivity with analysis and automated report generation.' },
+  { icon: Smartphone, title: 'Mobile Friendly', description: 'Work anywhere with a responsive design optimized for mobile devices.' },
+  { icon: DollarSign, title: 'Affordable Pricing', description: 'Starting from $9/month for small teams to enterprise. No hidden fees.' },
 ]
 
 const PLANS = [
   {
     key: 'free', name: 'Free', price: 0, yearlyPrice: 0, popular: false,
-    features: ['Absensi dasar', 'Maksimal 5 karyawan', 'Riwayat absensi', 'Dashboard admin'],
-    missing: ['AI Assistant', 'Export Excel', 'Peta monitoring'],
+    features: ['Basic attendance', 'Up to 5 employees', 'Attendance history', 'Admin dashboard'],
+    missing: ['AI Assistant', 'Excel Export', 'Map monitoring'],
   },
   {
     key: 'pro', name: 'Pro', price: 9, yearlyPrice: 86, popular: true,
-    features: ['Semua fitur Free', 'Maksimal 50 karyawan', 'AI Assistant penuh', 'Export Excel unlimited', 'Prioritas support'],
+    features: ['All Free features', 'Up to 50 employees', 'Full AI Assistant', 'Unlimited Excel Export', 'Priority support'],
     missing: [],
   },
   {
     key: 'enterprise', name: 'Enterprise', price: 29, yearlyPrice: 278, popular: false,
-    features: ['Semua fitur Pro', 'Karyawan unlimited', 'Priority support 24/7', 'Custom branding', 'Dedicated account manager'],
+    features: ['All Pro features', 'Unlimited employees', '24/7 Priority support', 'Custom branding', 'Dedicated account manager'],
     missing: [],
   },
 ]
 
 const NAV_LINKS = [
-  { label: 'Fitur', href: '#features' },
-  { label: 'Cara Kerja', href: '#how-it-works' },
+  { label: 'Features', href: '#features' },
+  { label: 'How It Works', href: '#how-it-works' },
   { label: 'Pricing', href: '#pricing' },
 ]
 
@@ -154,13 +153,28 @@ export default function LandingPage() {
               </button>
               <button onClick={() => navigate(ROUTES.LOGIN)}
                 className="px-5 py-2 rounded-xl bg-worksync-600 hover:bg-worksync-700 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-worksync-600/25">
-                Mulai Gratis
+                Get Started Free
               </button>
             </div>
 
-            <button className="md:hidden p-2" onClick={() => setMobileMenu(!mobileMenu)}>
-              {mobileMenu ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
+            <div className="hidden md:flex items-center gap-8">
+              {NAV_LINKS.map((link) => (
+                <button key={link.href} onClick={() => handleNav(link.href)}
+                  className="text-sm text-text-secondary hover:text-text-primary transition-colors">
+                  {link.label}
+                </button>
+              ))}
+              <button onClick={toggleTheme} className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors">
+                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
+              <button onClick={() => navigate(ROUTES.LOGIN)}
+                className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors">
+                Login
+              </button>
+              <button onClick={() => navigate(ROUTES.LOGIN)}
+                className="px-5 py-2 rounded-xl bg-worksync-600 hover:bg-worksync-700 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-worksync-600/25">
+                Get Started Free
+              </button>
           </div>
         </div>
 
@@ -182,10 +196,9 @@ export default function LandingPage() {
               className="block w-full text-left text-sm font-medium py-2">Login</button>
             <button onClick={() => navigate(ROUTES.LOGIN)}
               className="w-full py-2.5 rounded-xl bg-worksync-600 text-white text-sm font-medium text-center">
-              Mulai Gratis
-            </button>
-          </div>
-        )}
+                Get Started Free
+              </button>
+            )}
       </nav>
 
       <main>
@@ -203,7 +216,7 @@ export default function LandingPage() {
                 <span className="text-sm text-worksync-400">AI-Powered Works Activity Tracker</span>
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-                Lacak Aktivitas Kerja Tim
+                Track Your Team's Work Activity
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-worksync-400 to-accent-500">
                   dengan Mudah dan Profesional
                 </span>
@@ -215,11 +228,11 @@ export default function LandingPage() {
               <div className="flex flex-wrap gap-4">
                 <button onClick={() => navigate(ROUTES.LOGIN)}
                   className="px-8 py-3 rounded-xl bg-worksync-600 hover:bg-worksync-700 text-white font-semibold transition-all hover:shadow-xl hover:shadow-worksync-600/30 flex items-center gap-2">
-                  Mulai Gratis <ChevronRight className="w-4 h-4" />
+                  Get Started Free <ChevronRight className="w-4 h-4" />
                 </button>
                 <button onClick={() => handleNav('#features')}
                   className="px-8 py-3 rounded-xl border border-surface-border hover:border-worksync-600/50 text-text-secondary font-semibold transition-all">
-                  Lihat Demo
+                  See Demo
                 </button>
               </div>
             </div>
@@ -246,9 +259,9 @@ export default function LandingPage() {
       <section id="features" className="py-24 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl sm:text-4xl font-bold">Fitur Utama</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold">Core Features</h2>
             <p className="text-text-secondary text-lg max-w-2xl mx-auto">
-              Semua yang Anda butuhkan untuk mengelola aktivitas kerja tim dalam satu platform terintegrasi.
+              Everything you need to manage your team's work activities in one integrated platform.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -269,8 +282,8 @@ export default function LandingPage() {
       <section id="how-it-works" className="py-24 px-4 bg-surface-card/50">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl sm:text-4xl font-bold">Cara Kerja</h2>
-            <p className="text-text-secondary text-lg">Mulai gunakan Worksync dalam 3 langkah mudah.</p>
+            <h2 className="text-3xl sm:text-4xl font-bold">How It Works</h2>
+            <p className="text-text-secondary text-lg">Start using Worksync in 3 easy steps.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8 relative">
             {STEPS.map((step) => (
@@ -289,9 +302,9 @@ export default function LandingPage() {
       <section id="why-worksync" className="py-24 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl sm:text-4xl font-bold">Kenapa Worksync?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold">Why Worksync?</h2>
             <p className="text-text-secondary text-lg max-w-2xl mx-auto">
-              Dibangun dengan standar enterprise untuk tim yang serius.
+              Built with enterprise standards for serious teams.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -311,8 +324,8 @@ export default function LandingPage() {
       <section id="pricing" className="py-24 px-4 bg-surface-card/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 space-y-4">
-            <h2 className="text-3xl sm:text-4xl font-bold">Harga Sederhana</h2>
-            <p className="text-text-secondary text-lg">Mulai gratis, upgrade kapan saja.</p>
+            <h2 className="text-3xl sm:text-4xl font-bold">Simple Pricing</h2>
+            <p className="text-text-secondary text-lg">Start free, upgrade anytime.</p>
 
             <div className="flex items-center justify-center gap-3 mt-6">
               <span className={`text-sm ${!yearly ? 'text-text-primary font-semibold' : 'text-text-muted'}`}>Monthly</span>
@@ -341,7 +354,7 @@ export default function LandingPage() {
                   {plan.popular && (
                     <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                       <span className="px-4 py-1 rounded-full bg-gradient-to-r from-worksync-500 to-worksync-700 text-white text-xs font-semibold shadow-lg">
-                        Paling Populer
+                        Most Popular
                       </span>
                     </div>
                   )}
@@ -375,7 +388,7 @@ export default function LandingPage() {
                         ? 'bg-worksync-600 hover:bg-worksync-700 text-white shadow-lg shadow-worksync-600/25'
                         : 'border border-surface-border hover:border-worksync-600/50 text-text-secondary'
                     }`}>
-                    {plan.key === 'free' ? 'Mulai Gratis' : 'Upgrade Sekarang'}
+                    {plan.key === 'free' ? 'Get Started Free' : 'Upgrade Now'}
                   </button>
                 </div>
               )
@@ -401,9 +414,9 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Produk</h4>
+              <h4 className="font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-sm text-text-secondary">
-                <li><button onClick={() => handleNav('#features')} className="hover:text-text-primary transition-colors">Fitur</button></li>
+                <li><button onClick={() => handleNav('#features')} className="hover:text-text-primary transition-colors">Features</button></li>
                 <li><button onClick={() => handleNav('#pricing')} className="hover:text-text-primary transition-colors">Pricing</button></li>
                 <li><button className="hover:text-text-primary transition-colors">FAQ</button></li>
               </ul>
@@ -412,7 +425,7 @@ export default function LandingPage() {
             <div>
               <h4 className="font-semibold mb-4">Resources</h4>
               <ul className="space-y-2 text-sm text-text-secondary">
-                <li><span className="cursor-default">Dokumentasi</span></li>
+                <li><span className="cursor-default">Documentation</span></li>
                 <li><span className="cursor-default">API</span></li>
                 <li><span className="cursor-default">Blog</span></li>
               </ul>
@@ -421,8 +434,8 @@ export default function LandingPage() {
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-text-secondary">
-                <li><span className="cursor-default">Kebijakan Privasi</span></li>
-                <li><span className="cursor-default">Syarat & Ketentuan</span></li>
+                <li><span className="cursor-default">Privacy Policy</span></li>
+                <li><span className="cursor-default">Terms & Conditions</span></li>
               </ul>
             </div>
           </div>
