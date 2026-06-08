@@ -107,8 +107,10 @@ class Settings(BaseSettings):
 
     @property
     def async_database_url(self) -> str:
-        # Pass-through: exists for semantic clarity when the caller needs async.
-        return self.database_url
+        url = self.database_url
+        if url.startswith("postgresql://"):
+            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return url
 
     @property
     def sync_database_url(self) -> str:
