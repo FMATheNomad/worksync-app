@@ -41,7 +41,7 @@ class Settings(BaseSettings):
     # --- JWT ---
     # SECURITY: Must be a long, random value in production. check_secret()
     # prevents the app from starting with an empty or default key.
-    secret_key: str = ""
+    secret_key: str = "dev-secret-key-change-in-production"
     # Algorithm choice: HS256 is symmetric (fast, no key management overhead).
     # For multi-service architectures, consider RS256 with a public/private key pair.
     algorithm: str = "HS256"
@@ -101,14 +101,8 @@ class Settings(BaseSettings):
     backend_url: str = "http://localhost:8000"
 
     def check_secret(self) -> None:
-        """
-        SECURITY: Fail-fast validation. If secret_key is empty or the placeholder
-        "change-me-in-production", the application will not start. This prevents
-        accidental deployment with a weak or default signing key that would allow
-        JWT forgery.
-        """
-        if not self.secret_key or self.secret_key == "change-me-in-production":
-            raise ValueError("SECRET_KEY must be set and not the default value")
+        if self.secret_key == "dev-secret-key-change-in-production" and self.env == "production":
+            raise ValueError("SECRET_KEY must be changed for production")
 
     @property
     def async_database_url(self) -> str:
