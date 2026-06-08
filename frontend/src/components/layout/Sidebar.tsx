@@ -1,18 +1,8 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import {
-  LayoutDashboard,
-  Clock,
-  Receipt,
-  FileText,
-  Bot,
-  Users,
-  Bell,
-  BarChart3,
-  CreditCard,
-  MapPin,
-  LogOut,
-  ChevronLeft,
-  ChevronRight,
+  LayoutDashboard, Clock, Receipt, FileText, Bot,
+  Users, Bell, BarChart3, CreditCard, MapPin, LogOut,
+  ChevronLeft, ChevronRight, Menu,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -39,7 +29,12 @@ const adminNavItems = [
   { to: ROUTES.ADMIN.BILLING, icon: CreditCard, label: 'Billing' },
 ]
 
-export function Sidebar() {
+interface SidebarProps {
+  mobile?: boolean
+  onNavigate?: () => void
+}
+
+export function Sidebar({ mobile, onNavigate }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false)
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
@@ -53,18 +48,22 @@ export function Sidebar() {
     .toUpperCase()
     .slice(0, 2) || 'U'
 
+  const handleNav = () => {
+    if (mobile && onNavigate) onNavigate()
+  }
+
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 z-40 flex h-screen flex-col bg-surface-elevated border-r border-surface-border transition-all duration-300',
-        collapsed ? 'w-16' : 'w-64'
+        'flex h-screen flex-col bg-surface-elevated border-r border-surface-border transition-all duration-300',
+        mobile ? 'w-full' : collapsed ? 'w-16' : 'w-64'
       )}
     >
-      <div className={cn('flex items-center gap-3 px-4 h-16 border-b border-surface-border', collapsed && 'justify-center px-2')}>
+      <div className={cn('flex items-center gap-3 px-4 h-16 border-b border-surface-border', collapsed && !mobile && 'justify-center px-2')}>
         <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-worksync-500 to-worksync-700 shrink-0">
-          <span className="text-white font-bold text-sm">S</span>
+          <span className="text-white font-bold text-sm">W</span>
         </div>
-        {!collapsed && (
+        {(!collapsed || mobile) && (
           <span className="font-bold text-lg text-text-primary tracking-tight">{APP_NAME}</span>
         )}
       </div>
@@ -76,16 +75,17 @@ export function Sidebar() {
             <NavLink
               key={item.to}
               to={item.to}
+              onClick={handleNav}
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                collapsed && 'justify-center px-2',
+                collapsed && !mobile && 'justify-center px-2',
                 isActive
                   ? 'bg-worksync-600/20 text-worksync-400'
                   : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
               )}
             >
               <item.icon className="w-5 h-5 shrink-0" />
-              {!collapsed && <span>{item.label}</span>}
+              {(!collapsed || mobile) && <span>{item.label}</span>}
             </NavLink>
           )
         })}
@@ -93,8 +93,8 @@ export function Sidebar() {
 
       <Separator />
 
-      <div className={cn('p-3', collapsed && 'flex flex-col items-center gap-2')}>
-        {!collapsed && (
+      <div className={cn('p-3', collapsed && !mobile && 'flex flex-col items-center gap-2')}>
+        {(!collapsed || mobile) && (
           <div className="flex items-center gap-3 px-2 mb-2">
             <Avatar className="w-8 h-8">
               <AvatarFallback>{initials}</AvatarFallback>
@@ -105,28 +105,30 @@ export function Sidebar() {
             </div>
           </div>
         )}
-        {collapsed && (
+        {collapsed && !mobile && (
           <Avatar className="w-8 h-8 mb-2">
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
         )}
         <Button
           variant="ghost"
-          size={collapsed ? 'icon' : 'default'}
-          className={cn('w-full justify-start text-text-secondary hover:text-status-error', collapsed && 'justify-center')}
-          onClick={logout}
+          size={(collapsed && !mobile) ? 'icon' : 'default'}
+          className={cn('w-full justify-start text-text-secondary hover:text-status-error', collapsed && !mobile && 'justify-center')}
+          onClick={() => { logout(); handleNav() }}
         >
           <LogOut className="w-4 h-4 shrink-0" />
-          {!collapsed && <span className="ml-2">Sign Out</span>}
+          {(!collapsed || mobile) && <span className="ml-2">Sign Out</span>}
         </Button>
       </div>
 
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-surface-card border border-surface-border flex items-center justify-center hover:bg-surface-hover transition-colors"
-      >
-        {collapsed ? <ChevronRight className="w-3 h-3 text-text-secondary" /> : <ChevronLeft className="w-3 h-3 text-text-secondary" />}
-      </button>
+      {!mobile && (
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-surface-card border border-surface-border flex items-center justify-center hover:bg-surface-hover transition-colors"
+        >
+          {collapsed ? <ChevronRight className="w-3 h-3 text-text-secondary" /> : <ChevronLeft className="w-3 h-3 text-text-secondary" />}
+        </button>
+      )}
     </aside>
   )
 }

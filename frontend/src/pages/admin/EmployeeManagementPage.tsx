@@ -225,7 +225,7 @@ export default function EmployeeManagementPage() {
               ))}
             </div>
           ) : (
-            <Table>
+            <div className="overflow-x-auto -mx-4 md:mx-0"><Table>
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>
@@ -290,7 +290,7 @@ export default function EmployeeManagementPage() {
                   ))
                 )}
               </TableBody>
-            </Table>
+            </Table></div>
           )}
         </CardContent>
       </Card>

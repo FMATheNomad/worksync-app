@@ -1,15 +1,11 @@
 import { useLocation } from 'react-router-dom'
-import { Bell, Search } from 'lucide-react'
+import { Bell, Search, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -27,7 +23,11 @@ const routeNames: Record<string, string> = {
   '/employee/ai-assistant': 'AI Assistant',
 }
 
-export function Topbar() {
+interface TopbarProps {
+  onMenuClick?: () => void
+}
+
+export function Topbar({ onMenuClick }: TopbarProps) {
   const location = useLocation()
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
@@ -42,8 +42,11 @@ export function Topbar() {
     .slice(0, 2) || 'U'
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-6 bg-surface-base border-b border-surface-border">
-      <div className="flex items-center gap-4">
+    <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-3 md:px-6 bg-surface-base border-b border-surface-border">
+      <div className="flex items-center gap-3">
+        <Button variant="ghost" size="icon" className="md:hidden" onClick={onMenuClick}>
+          <Menu className="w-5 h-5 text-text-secondary" />
+        </Button>
         <nav className="flex items-center gap-2 text-sm text-text-muted">
           <span className="capitalize">{breadcrumbs[0] || 'App'}</span>
           {breadcrumbs.length > 1 && (
@@ -55,12 +58,12 @@ export function Topbar() {
         </nav>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 md:gap-3">
         <div className="relative hidden md:block">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
           <Input
             placeholder="Search..."
-            className="pl-9 w-64 h-9 bg-surface-elevated border-surface-border text-sm"
+            className="pl-9 w-48 lg:w-64 h-9 bg-surface-elevated border-surface-border text-sm"
           />
         </div>
 
@@ -72,7 +75,7 @@ export function Topbar() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
-              <Avatar className="w-8 h-8">
+              <Avatar className="w-7 h-7 md:w-8 md:h-8">
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
             </Button>
@@ -85,17 +88,10 @@ export function Topbar() {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-text-secondary">
-              Profile Settings
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-text-secondary">
-              Account
-            </DropdownMenuItem>
+            <DropdownMenuItem className="text-text-secondary">Profile Settings</DropdownMenuItem>
+            <DropdownMenuItem className="text-text-secondary">Account</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-status-error hover:text-status-error"
-              onClick={logout}
-            >
+            <DropdownMenuItem className="text-status-error hover:text-status-error" onClick={logout}>
               Sign Out
             </DropdownMenuItem>
           </DropdownMenuContent>

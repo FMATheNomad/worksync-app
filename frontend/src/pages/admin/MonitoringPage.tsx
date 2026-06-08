@@ -169,7 +169,7 @@ export default function MonitoringPage() {
               {loading ? (
                 <Skeleton className="h-48 w-full" />
               ) : (
-                <Table>
+                <div className="overflow-x-auto -mx-4 md:mx-0"><Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Employee</TableHead>
@@ -206,7 +206,7 @@ export default function MonitoringPage() {
                       ))
                     )}
                   </TableBody>
-                </Table>
+                </Table></div>
               )}
             </CardContent>
           </Card>
@@ -222,7 +222,7 @@ export default function MonitoringPage() {
               {loading ? (
                 <Skeleton className="h-48 w-full" />
               ) : (
-                <Table>
+                <div className="overflow-x-auto -mx-4 md:mx-0"><Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Employee</TableHead>
@@ -265,7 +265,7 @@ export default function MonitoringPage() {
                       ))
                     )}
                   </TableBody>
-                </Table>
+                </Table></div>
               )}
             </CardContent>
           </Card>
@@ -281,7 +281,7 @@ export default function MonitoringPage() {
               {loading ? (
                 <Skeleton className="h-48 w-full" />
               ) : (
-                <Table>
+                <div className="overflow-x-auto -mx-4 md:mx-0"><Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Employee</TableHead>
@@ -329,7 +329,7 @@ export default function MonitoringPage() {
                       ))
                     )}
                   </TableBody>
-                </Table>
+                </Table></div>
               )}
             </CardContent>
           </Card>
