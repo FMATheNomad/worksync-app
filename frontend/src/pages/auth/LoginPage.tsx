@@ -105,13 +105,11 @@ export default function LoginPage() {
             )}
           </Button>
 
-          {import.meta.env.DEV && (
-            <div className="pt-2 text-center">
-              <p className="text-xs text-text-muted">
-                Demo Admin: admin@worksync.app / password123 | Employee: employee@worksync.app / password123
-              </p>
-            </div>
-          )}
+          <div className="pt-2 text-center">
+            <p className="text-xs text-text-muted">
+              Demo Admin: admin@worksync.app / password123 | Employee: employee@worksync.app / password123
+            </p>
+          </div>
         </form>
 
         <div className="mt-6 flex items-center justify-center gap-2 text-xs text-text-muted">
