@@ -76,21 +76,16 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
-from slowapi.util import get_remote_address
 
 from app.api.v1 import auth, users, attendance, expenses, reports, ai, billing
 from app.core.config import settings
 from app.core.database import engine, async_session_factory, Base
+from app.core.limiter import limiter
 from app.core.middleware import SubscriptionMiddleware
 from app.core.security import hash_password
 from app.models.user import User, UserRole, SubscriptionPlan, SubscriptionStatus
-
-# Global rate limiter instance.
-# key_func=get_remote_address: Identifies clients by IP for rate limiting.
-# default_limits=["60/minute"]: 60 requests per minute per IP.
-limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
 
 app = FastAPI(
     title="Worksync API",

@@ -33,7 +33,7 @@ WHY /refresh doesn't require auth:
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.main import limiter
+from app.core.limiter import limiter
 
 from app.core.database import get_db
 from app.core.dependencies import get_current_user
