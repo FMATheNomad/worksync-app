@@ -222,7 +222,7 @@ export default function LandingPage() {
                 </span>
               </h1>
               <p className="text-lg text-text-secondary max-w-xl">
-                Worksync adalah platform absensi, pelacakan pengeluaran, dan laporan harian berbasis AI
+                Worksync is an AI-powered attendance, expense tracking, and daily reporting platform
                 yang membantu tim Anda bekerja lebih produktif dan terorganisir.
               </p>
               <div className="flex flex-wrap gap-4">
@@ -409,7 +409,7 @@ export default function LandingPage() {
                 <span className="text-xl font-bold">Worksync</span>
               </div>
               <p className="text-sm text-text-secondary leading-relaxed">
-                Platform absensi dan monitoring kerja berbasis AI untuk tim produktif.
+                AI-powered attendance and work monitoring platform for productive teams.
               </p>
             </div>
 
