@@ -1,7 +1,7 @@
 SUBSCRIPTION_PLANS = {
     "free": {
-        "max_employees": 5,
-        "features": [],
+        "max_employees": 999999,
+        "features": ["ai_assistant", "export_excel", "unlimited_employees", "priority_support", "custom_branding"],
         "price_monthly": 0,
         "price_yearly": 0,
     },

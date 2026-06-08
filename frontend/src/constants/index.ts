@@ -64,15 +64,15 @@ export const SUBSCRIPTION_PLANS: Record<SubscriptionPlan, Plan> = {
     yearlyPrice: 0,
     interval: 'month',
     features: {
-      users: 5,
-      aiAssistant: false,
-      exportExcel: false,
-      unlimitedEmployees: false,
-      prioritySupport: false,
-      customBranding: false,
+      users: 999999,
+      aiAssistant: true,
+      exportExcel: true,
+      unlimitedEmployees: true,
+      prioritySupport: true,
+      customBranding: true,
     },
     limits: {
-      maxUsers: 5,
+      maxUsers: 999999,
     },
   },
   pro: {
