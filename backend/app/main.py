@@ -8,8 +8,8 @@ database on first startup.
 STARTUP SEQUENCE:
   1. FastAPI app created with title/version/docs config.
   2. Rate limiter (slowapi) configured with default 60 req/min per IP.
-  3. CORS middleware added (before SubscriptionMiddleware — middleware order matters).
-  4. SubscriptionMiddleware added for feature gating.
+  3. CORS middleware added.
+  4. Subscription gating handled per-route via check_feature_access().
   5. All API routers included under /api/v1 prefix.
   6. Static files mounted (if frontend/dist exists).
   7. Exception handlers registered for 401, 403, 404, 500.
@@ -83,7 +83,7 @@ from app.api.v1 import auth, users, attendance, expenses, reports, ai, billing
 from app.core.config import settings
 from app.core.database import engine, async_session_factory, Base
 from app.core.limiter import limiter
-from app.core.middleware import SubscriptionMiddleware
+
 from app.core.security import hash_password
 from app.models.user import User, UserRole, SubscriptionPlan, SubscriptionStatus
 
@@ -114,9 +114,6 @@ app.add_middleware(
 )
 
 # 2. Subscription middleware: Feature gating based on plan.
-app.add_middleware(SubscriptionMiddleware)
-
-# --- Route registration ---
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
 app.include_router(attendance.router, prefix="/api/v1")
