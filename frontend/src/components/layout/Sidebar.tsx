@@ -2,7 +2,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Clock, Receipt, FileText, Bot,
   Users, Bell, BarChart3, CreditCard, MapPin, LogOut,
-  ChevronLeft, ChevronRight, Menu,
+  ChevronLeft, ChevronRight,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
