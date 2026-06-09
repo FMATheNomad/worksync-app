@@ -239,7 +239,7 @@ export default function AttendancePage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6 p-4 md:p-6">
       <div>
         <h1 className="text-2xl font-bold text-text-primary">Attendance</h1>
         <p className="text-text-secondary mt-1">Check in and out with GPS verification</p>
@@ -282,7 +282,7 @@ export default function AttendancePage() {
               <img
                 src={selfiePreview}
                 alt="Selfie preview"
-                className="w-48 h-48 object-cover rounded-xl mx-auto"
+                className="w-full max-w-[200px] h-48 object-cover rounded-xl mx-auto"
               />
               <Button
                 variant="ghost"
@@ -302,7 +302,7 @@ export default function AttendancePage() {
                 ref={videoRef}
                 autoPlay
                 playsInline
-                className="w-48 h-48 rounded-xl mx-auto bg-black object-cover"
+                className="w-full max-w-[200px] h-48 rounded-xl mx-auto bg-black object-cover"
               />
               <div className="flex justify-center gap-2">
                 <Button onClick={captureSelfie}>Capture</Button>
@@ -319,7 +319,7 @@ export default function AttendancePage() {
               </div>
             </div>
           ) : (
-            <div className="flex justify-center gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
               <Button onClick={startCamera} variant="outline">
                 <Camera className="w-4 h-4 mr-2" />
                 Open Camera
@@ -352,7 +352,7 @@ export default function AttendancePage() {
             size="lg"
             onClick={handleCheckIn}
             disabled={actionLoading || !lat || !lng}
-            className="w-48"
+            className="w-full sm:w-auto"
           >
             {actionLoading ? (
               <span className="flex items-center gap-2">
@@ -373,7 +373,7 @@ export default function AttendancePage() {
             onClick={handleCheckOut}
             disabled={actionLoading || !lat || !lng}
             variant="secondary"
-            className="w-48"
+            className="w-full sm:w-auto"
           >
             {actionLoading ? (
               <span className="flex items-center gap-2">

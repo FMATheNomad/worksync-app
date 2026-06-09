@@ -109,8 +109,8 @@ export default function ExpensesPage() {
   const totalAmount = expenses.reduce((sum, e) => sum + e.amount, 0)
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">Expenses</h1>
           <p className="text-text-secondary mt-1">Track your business expenses</p>
@@ -122,7 +122,7 @@ export default function ExpensesPage() {
               Add Expense
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="max-w-[95vw] sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Add New Expense</DialogTitle>
               <DialogDescription>Fill in the details of your expense</DialogDescription>
@@ -138,7 +138,7 @@ export default function ExpensesPage() {
                   required
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="amount">Amount (Rp) *</Label>
                   <Input

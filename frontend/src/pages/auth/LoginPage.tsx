@@ -56,7 +56,7 @@ export default function LoginPage() {
           <p className="text-text-secondary mt-1">Sign in to your workspace</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-surface-card border border-surface-border rounded-2xl p-6 space-y-4 shadow-xl">
+        <form onSubmit={handleSubmit} className="bg-surface-card border border-surface-border rounded-2xl p-4 sm:p-6 space-y-4 shadow-xl">
           {error && (
             <div className="bg-status-error/10 border border-status-error/30 text-status-error text-sm rounded-lg px-4 py-3">
               {error}

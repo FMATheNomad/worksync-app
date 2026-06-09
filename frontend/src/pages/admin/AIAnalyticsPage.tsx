@@ -121,7 +121,7 @@ export default function AIAnalyticsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-6">
       <div>
         <h1 className="text-2xl font-bold text-text-primary">AI Analytics</h1>
         <p className="text-text-secondary mt-1">Ask questions about attendance, expenses, and reports</p>

@@ -116,18 +116,18 @@ export default function MonitoringPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">Monitoring</h1>
           <p className="text-text-secondary mt-1">Track all employee activities</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           <Input
             type="date"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="w-44"
+            className="w-full sm:w-44"
           />
           <Button variant="outline" size="icon">
             <Filter className="w-4 h-4" />
@@ -337,7 +337,7 @@ export default function MonitoringPage() {
       </Tabs>
 
       <Dialog open={!!selectedExpense} onOpenChange={(o) => !o && setSelectedExpense(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-[95vw] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Expense Photo</DialogTitle>
             <DialogDescription>{selectedExpense?.item_name}</DialogDescription>
@@ -353,7 +353,7 @@ export default function MonitoringPage() {
       </Dialog>
 
       <Dialog open={!!selectedReport} onOpenChange={(o) => !o && setSelectedReport(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-[95vw] sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Report by {selectedReport?.user_name}</DialogTitle>
             <DialogDescription>{selectedReport?.date}</DialogDescription>

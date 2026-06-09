@@ -108,15 +108,15 @@ export default function NotificationsPage() {
   const unresolvedCount = lateEmployees.filter((e) => !e.notificationSent).length
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">Notifications</h1>
           <p className="text-text-secondary mt-1">
             Employees who haven't checked in by {ABSENSI_CONSTANTS.LATE_CUTOFF_HOUR}:{String(ABSENSI_CONSTANTS.LATE_CUTOFF_MINUTE).padStart(2, '0')} AM
           </p>
         </div>
-        <Button onClick={sendBulkNotifications} disabled={unresolvedCount === 0}>
+        <Button onClick={sendBulkNotifications} disabled={unresolvedCount === 0} className="w-full sm:w-auto">
           <Send className="w-4 h-4 mr-2" />
           Notify All ({unresolvedCount})
         </Button>
@@ -149,7 +149,7 @@ export default function NotificationsPage() {
               {lateEmployees.map((emp) => (
                 <Card key={emp.id} className="border-surface-border">
                   <CardContent className="pt-6">
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
                       <div className="flex items-start gap-3">
                         <div className="w-10 h-10 rounded-full bg-surface-elevated flex items-center justify-center shrink-0">
                           <AlertTriangle className={`w-5 h-5 ${emp.lastCheckIn ? 'text-status-warning' : 'text-status-error'}`} />
@@ -157,7 +157,7 @@ export default function NotificationsPage() {
                         <div>
                           <h3 className="font-medium text-text-primary">{emp.name}</h3>
                           <p className="text-xs text-text-muted">{emp.jabatan} &middot; {emp.email}</p>
-                          <div className="flex items-center gap-2 mt-2">
+                          <div className="flex flex-wrap items-center gap-2 mt-2">
                             <Badge
                               variant={emp.lastCheckIn ? 'warning' : 'destructive'}
                               className="text-xs"
@@ -176,7 +176,7 @@ export default function NotificationsPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 shrink-0">
                         {!emp.notificationSent ? (
                           <Button
                             size="sm"

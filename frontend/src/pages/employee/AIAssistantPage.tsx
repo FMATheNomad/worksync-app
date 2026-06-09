@@ -112,7 +112,7 @@ export default function AIAssistantPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-6">
       <div>
         <h1 className="text-2xl font-bold text-text-primary">AI Assistant</h1>
         <p className="text-text-secondary mt-1">Generate professional daily reports with AI</p>

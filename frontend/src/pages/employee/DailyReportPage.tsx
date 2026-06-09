@@ -77,7 +77,7 @@ export default function DailyReportPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 md:p-6">
       <div>
         <h1 className="text-2xl font-bold text-text-primary">Daily Report</h1>
         <p className="text-text-secondary mt-1">Document your daily work activities</p>
@@ -111,17 +111,17 @@ export default function DailyReportPage() {
                 rows={8}
                 className="resize-none"
               />
-              <div className="flex items-center justify-between">
-                <Button variant="outline" onClick={handleAiGenerate}>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <Button variant="outline" onClick={handleAiGenerate} className="w-full sm:w-auto">
                   <Sparkles className="w-4 h-4 mr-2 text-accent-400" />
                   Generate with AI
                 </Button>
                 <div className="flex gap-2">
-                  <Button variant="ghost" onClick={handleSaveDraft} disabled={submitting}>
+                  <Button variant="ghost" onClick={handleSaveDraft} disabled={submitting} className="flex-1 sm:flex-none">
                     <Save className="w-4 h-4 mr-2" />
                     Save Draft
                   </Button>
-                  <Button onClick={handleSubmit} disabled={submitting}>
+                  <Button onClick={handleSubmit} disabled={submitting} className="flex-1 sm:flex-none">
                     <Send className="w-4 h-4 mr-2" />
                     Submit
                   </Button>

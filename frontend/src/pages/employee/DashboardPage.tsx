@@ -41,7 +41,7 @@ export default function EmployeeDashboardPage() {
   const isCheckedOut = todayAttendance?.check_in_time && todayAttendance?.check_out_time
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 md:p-6">
       <div>
         <h1 className="text-2xl font-bold text-text-primary">Welcome back, {user?.name?.split(' ')[0]}</h1>
         <p className="text-text-secondary mt-1">{format(new Date(), 'EEEE, MMMM d, yyyy')}</p>
