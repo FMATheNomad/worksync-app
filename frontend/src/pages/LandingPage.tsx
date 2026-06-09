@@ -56,7 +56,7 @@ import { useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   MapPin, Camera, BarChart3, Download, Sparkles,
-  ChevronRight, Check, Menu, X, Star, Shield, Smartphone, DollarSign, Sun, Moon
+  ChevronRight, Check, Star, Shield, Smartphone, DollarSign, Sun, Moon
 } from 'lucide-react'
 import { useThemeStore } from '@/stores/themeStore'
 import { ROUTES } from '@/constants'
@@ -156,25 +156,6 @@ export default function LandingPage() {
                 Get Started Free
               </button>
             </div>
-
-            <div className="hidden md:flex items-center gap-8">
-              {NAV_LINKS.map((link) => (
-                <button key={link.href} onClick={() => handleNav(link.href)}
-                  className="text-sm text-text-secondary hover:text-text-primary transition-colors">
-                  {link.label}
-                </button>
-              ))}
-              <button onClick={toggleTheme} className="p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors">
-                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              </button>
-              <button onClick={() => navigate(ROUTES.LOGIN)}
-                className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors">
-                Login
-              </button>
-              <button onClick={() => navigate(ROUTES.LOGIN)}
-                className="px-5 py-2 rounded-xl bg-worksync-600 hover:bg-worksync-700 text-white text-sm font-medium transition-all hover:shadow-lg hover:shadow-worksync-600/25">
-                Get Started Free
-              </button>
           </div>
         </div>
 
@@ -198,7 +179,8 @@ export default function LandingPage() {
               className="w-full py-2.5 rounded-xl bg-worksync-600 text-white text-sm font-medium text-center">
                 Get Started Free
               </button>
-            )}
+          </div>
+        )}
       </nav>
 
       <main>
@@ -218,12 +200,12 @@ export default function LandingPage() {
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
                 Track Your Team's Work Activity
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-worksync-400 to-accent-500">
-                  dengan Mudah dan Profesional
+                  Easily and Professionally
                 </span>
               </h1>
               <p className="text-lg text-text-secondary max-w-xl">
                 Worksync is an AI-powered attendance, expense tracking, and daily reporting platform
-                yang membantu tim Anda bekerja lebih produktif dan terorganisir.
+                that helps your team work more productively and stay organized.
               </p>
               <div className="flex flex-wrap gap-4">
                 <button onClick={() => navigate(ROUTES.LOGIN)}
