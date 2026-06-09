@@ -368,6 +368,67 @@ After deploying your application, configure the Polar.sh webhook:
    - `subscription.revoked`
 4. Copy the Webhook Secret and set it as `POLAR_WEBHOOK_SECRET` in your backend `.env`
 
+## Mobile Build (Android APK)
+
+Worksync uses **Capacitor** to wrap the web app into a native Android APK.
+
+### Prerequisites
+- **Java JDK 17+** — [Download](https://adoptium.net/temurin/releases/?version=17)
+- **Android Studio** — [Download](https://developer.android.com/studio)
+- Android SDK 34 (install via Android Studio SDK Manager)
+
+### Build APK
+
+```bash
+# 1. Build frontend
+cd frontend
+npm run build
+
+# 2. Sync web assets to native project
+npx cap sync
+
+# 3. Export JAVA_HOME (adjust path to your JDK)
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+export ANDROID_HOME=$HOME/Android/Sdk
+
+# 4. Build APK
+cd android
+./gradlew assembleDebug
+```
+
+APK location: `frontend/android/app/build/outputs/apk/debug/app-debug.apk`
+
+### Alternative: Build via Android Studio
+
+```bash
+cd frontend
+npm run build
+npx cap sync
+npx cap open android
+```
+
+Then in Android Studio: **Build → Build Bundle(s) / APK → Build APK**
+
+### iOS Build (macOS only)
+
+```bash
+cd frontend
+npm run build
+npx cap sync
+npx cap open ios
+```
+
+Requires Xcode and an Apple Developer account.
+
+### Desktop App (Electron)
+
+```bash
+cd frontend
+npm run build
+npx cap sync
+npx cap open @capacitor-community/electron
+```
+
 ## Railway Deployment
 
 Railway provides a streamlined deployment experience for full-stack applications. Follow these steps to deploy Worksync:
